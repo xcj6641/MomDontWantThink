@@ -1,0 +1,9 @@
+请将以下UI抽成小程序 components，并在页面中引用：
+1) components/dateRow/dateRow：共享日期行（周一~周日按钮），支持状态渲染（未分配/浅色/深色），支持点击回调。
+2) components/templateTabs/templateTabs：菜单1/2/3… tab切换（带颜色圆点）。
+3) components/mealItem/mealItem：单个餐项展示（菜名、[BLW]标签、按钮：查看做法/🔄/✔）
+4) components/assistToast/assistToast：统一助理型toast（可用wx.showToast封装）。
+并实现交互：
+- weekSettings：选中菜单tab后，dateRow显示该菜单的深色选择；点击日期会触发“后点击优先”分配并toast提示。
+- 确认保存时，如有未分配日期：弹窗提示“周四还没有选备餐”，可选择自动分配。
+输出：组件文件（json/wxml/wxss/js）+ 更新引用页面的代码。

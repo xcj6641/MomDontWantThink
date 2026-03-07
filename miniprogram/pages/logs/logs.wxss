@@ -1,0 +1,77 @@
+.container { }
+
+.tip {
+  padding: 20rpx 0;
+}
+
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.log-day {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.log-date {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.log-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 0;
+  font-size: 26rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.log-item:last-child {
+  border-bottom: none;
+}
+
+.log-entry-row {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.btn-anomaly {
+  margin-left: 16rpx;
+  font-size: 24rpx;
+}
+
+.meal-k {
+  width: 100rpx;
+  color: #666;
+}
+
+.meal-name {
+  flex: 1;
+  color: #333;
+}
+
+.reaction {
+  font-size: 24rpx;
+  color: #07c160;
+  margin-left: 12rpx;
+}
+
+.anomaly {
+  font-size: 24rpx;
+  color: #fa5151;
+  margin-left: 12rpx;
+}
+
+.empty {
+  padding: 48rpx 0;
+  text-align: center;
+}

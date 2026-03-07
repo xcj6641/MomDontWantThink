@@ -1,0 +1,21 @@
+<view class="container">
+  <view class="tip tip-text">👉 按天倒序，可标记异常（仅记录，不推断过敏原）</view>
+
+  <view class="log-list" wx:if="{{logs.length > 0}}">
+    <view class="log-day" wx:for="{{logs}}" wx:key="date">
+      <text class="log-date">{{item.date}}</text>
+      <view class="log-item" wx:for="{{item.entries}}" wx:for-item="entry" wx:key="mealKey">
+        <view class="log-entry-row">
+          <text class="meal-k">{{entry.mealLabel}}</text>
+          <text class="meal-name">{{entry.recipeName}}</text>
+          <text class="reaction" wx:if="{{entry.reaction}}">{{entry.reactionText}}</text>
+          <text class="anomaly" wx:if="{{entry.anomalyType}}">{{entry.anomalyText}}</text>
+        </view>
+        <button class="btn-anomaly" size="mini" data-date="{{item.date}}" data-mealkey="{{entry.mealKey}}" bindtap="onMarkAnomaly">标记异常</button>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else>
+    <text class="tip-text">还没有进食记录，标记「已做」后会自动记在这里哦</text>
+  </view>
+</view>

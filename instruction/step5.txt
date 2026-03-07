@@ -1,0 +1,20 @@
+请生成微信原生小程序页面骨架与路由配置（app.json、app.js/ts、app.wxss、每个页面的json/wxml/wxss/js）。
+页面要求（MVP）：
+Tabbar：1) pages/home/home（辅食） 2) pages/me/me（我的）
+其余页面（非tab）：
+- pages/week/week（本周计划：模板视图）
+- pages/weekSettings/weekSettings（本周备餐设置编辑态：共享日期行+颜色逻辑+底部固定确认）
+- pages/templateEdit/templateEdit（模板编辑：5餐+BLW开关）
+- pages/dayEdit/dayEdit（单日编辑：5餐+override）
+- pages/nextWeek/nextWeek（下周计划）
+- pages/shopping/shopping（购物清单：已备X/共Y+分类勾选）
+- pages/logs/logs（进食记录：按天倒序+异常标记）
+- pages/recipes/recipes（我的菜谱列表）
+- pages/recipeEdit/recipeEdit（编辑/新增菜谱）
+- pages/profile/profile（宝宝信息：过敏食材、BLW喜欢/不喜欢）
+要求：
+1) 所有页面先输出“静态UI骨架+必要的data字段”，并预留云函数调用位置。
+2) 文案必须用助理口吻（例如“✔️ 已帮你准备好”“👉 记得提前解冻…”）。
+3) weekSettings页面实现共享日期行视觉：白底未分配、浅色已分配非当前、深色当前菜单。
+4) 底部确认按钮固定悬浮。
+请按文件路径输出完整内容。

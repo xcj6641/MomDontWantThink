@@ -1,0 +1,22 @@
+请开始实现云函数代码（CloudBase Node.js 云函数，使用 wx-server-sdk）。
+优先实现核心功能云函数 1) initUser 2) getWeekData 3) generateNextWeek 4) updateWeekSettings 5) updateTemplate 6) updateDayOverride 7) buildShoppingList 8) logMealDone 9) markReaction。
+要求：
+- 每个云函数一个目录：cloudfunctions/<name>/index.js + package.json（如需要）。
+- 代码必须包含参数校验、权限校验（openid只访问自己的数据）、错误处理。
+- 生成下周规则：
+  - 沿用上周 week_settings（N、日期分配结构、每餐BLW偏好、是否包含我的菜谱开关、偏好过滤）
+  - 重新生成模板内容（每套模板每餐重新挑菜谱）
+  - 首次使用：N=3、2-3-2、默认晚餐BLW
+  - 过敏食材排除；BLW不喜欢食材在BLW餐别排除；BLW喜欢加权
+  - 简单去重：同周尽量不重复同recipe（加餐水果可放宽）
+- updateWeekSettings：
+  - UI允许临时空白天，但确认保存时校验
+  - 若空白天存在：支持参数 autoAssign=true 时自动均匀分配
+  - N变小时：被删模板的日期“均匀分配”到剩余模板
+  - 保留单日overrides
+- buildShoppingList：
+  - 汇总“最终菜单（模板+override）”的 ingredients
+  - 返回分类（蛋白/蔬菜/水果/主食/其他）+ checked状态
+  - 每周重置：新周生成后购物勾选为空
+输出格式：
+按文件路径依次给出完整内容，确保我可直接复制到项目。

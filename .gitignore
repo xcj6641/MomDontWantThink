@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# WeChat Mini Program
+miniprogram_npm/
+project.private.config.json
+
+# Logs & temp
+*.log
+*.tmp
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.suo
+*.user
+
+# Cloud functions runtime
+cloudfunctions/**/node_modules/

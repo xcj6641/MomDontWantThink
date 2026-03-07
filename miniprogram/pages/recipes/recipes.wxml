@@ -1,0 +1,21 @@
+<view class="container">
+  <view class="tip tip-text">✔️ 已帮你保存常用菜谱，生成计划时会从这里挑选</view>
+
+  <navigator url="/pages/recipeEdit/recipeEdit" class="add-btn">+ 新增菜谱</navigator>
+
+  <view class="list" wx:if="{{list.length > 0}}">
+    <view
+      class="recipe-item"
+      wx:for="{{list}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="onItemTap"
+    >
+      <text class="name">{{item.name}}</text>
+      <text class="category">{{item.category || '未分类'}}</text>
+    </view>
+  </view>
+  <view class="empty" wx:else>
+    <text class="tip-text">还没有菜谱，点击上方「新增菜谱」添加吧</text>
+  </view>
+</view>

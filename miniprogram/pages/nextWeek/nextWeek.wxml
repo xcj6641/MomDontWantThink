@@ -1,0 +1,39 @@
+<view class="container">
+  <view class="top-bar">
+    <navigator url="/pages/shopping/shopping?weekStartDate={{nextWeekStartDate}}" class="link-shopping">购物清单</navigator>
+  </view>
+
+  <view class="this-week-section" wx:if="{{showGenerateThisWeek}}">
+    <view class="section-title">本周 · {{thisWeekStartDate}}</view>
+    <text class="tip-text">本周尚无计划，点击下方按钮生成</text>
+    <button class="btn-generate" bindtap="onGenerateThisWeek">生成本周计划</button>
+  </view>
+
+  <view class="success-block" wx:if="{{hasPlan}}">
+    <text class="success-title">✔️ 下周已帮你安排好</text>
+    <text class="success-desc">已沿用上周备餐结构，菜单已重新生成，可随时替换</text>
+    <view class="success-actions">
+      <navigator url="/pages/week/week?weekStartDate={{nextWeekStartDate}}" class="btn-primary">查看下周计划</navigator>
+      <navigator url="/pages/weekSettings/weekSettings?weekStartDate={{nextWeekStartDate}}" class="btn-secondary">调整备餐设置</navigator>
+    </view>
+    <text class="tip-text reminder">👉 周日建议准备下周食材</text>
+  </view>
+
+  <view class="generate-block" wx:else>
+    <view class="header-row">
+      <text class="title">下周 · {{nextWeekStartDate}}</text>
+      <button class="btn-generate" bindtap="onGenerate">生成下周计划</button>
+    </view>
+    <text class="tip-text">沿用上周备餐套数与日期分配，仅重新生成菜单内容</text>
+  </view>
+
+  <view class="day-list" wx:if="{{hasPlan && days.length > 0}}">
+    <view class="day-card" wx:for="{{days}}" wx:key="date">
+      <text class="day-date">{{item.date}}</text>
+      <view class="meal-row" wx:for="{{item.meals}}" wx:for-item="m" wx:key="mealKey">
+        <text class="meal-k">{{m.mealLabel}}</text>
+        <text class="meal-v">{{m.recipeName || '未安排'}}</text>
+      </view>
+    </view>
+  </view>
+</view>

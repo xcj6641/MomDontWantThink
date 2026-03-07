@@ -1,0 +1,78 @@
+<view class="container">
+  <!-- 初始界面：宝宝生日 + 过敏源 + 生成本周 -->
+  <block wx:if="{{showInitial}}">
+    <view class="onboarding">
+      <view class="welcome">
+        <text class="welcome-title">我来帮你安排宝宝辅食 😊</text>
+        <text class="welcome-subtitle">👉 先填宝宝生日，我就能按月龄生成适龄菜单</text>
+      </view>
+
+      <view class="card birthday-card">
+        <view class="card-title">宝宝生日（必填）</view>
+        <picker mode="date" value="{{babyBirthday}}" start="2020-01-01" end="2030-12-31" bindchange="onBirthdayChange">
+          <view class="picker-display">{{babyBirthday || '请选择日期'}}</view>
+        </picker>
+        <text class="card-hint">我会根据生日自动计算月龄</text>
+      </view>
+
+      <view class="card allergens-card">
+        <view class="card-title">过敏食材（可选）</view>
+        <view class="allergen-chips" wx:if="{{allergens.length > 0}}">
+          <view class="chip" wx:for="{{allergens}}" wx:key="*this">
+            <text class="chip-text">{{item}}</text>
+            <text class="chip-remove" data-index="{{index}}" bindtap="onRemoveAllergen">×</text>
+          </view>
+        </view>
+        <button class="btn-add-allergen" bindtap="onAddAllergen">+ 添加过敏食材</button>
+        <text class="card-hint">可先不填，之后也能随时补充</text>
+      </view>
+
+      <view class="bottom-placeholder"></view>
+      <view class="bottom-bar">
+        <button class="btn-primary-bottom" disabled="{{!birthdayValid || generating}}" loading="{{generating}}" bindtap="onGenerateThisWeek">生成本周辅食计划</button>
+      </view>
+    </view>
+  </block>
+
+  <!-- 常规界面 -->
+  <block wx:else>
+    <view class="header">
+      <text class="title">✔️ 已帮你准备好今日安排</text>
+      <text class="subtitle tip-text">👉 记得提前解冻食材哦</text>
+    </view>
+
+    <view class="today-card" wx:if="{{todayMeals.length > 0}}">
+      <view class="card-title">今日菜单 · {{today}}</view>
+      <view class="meal-list">
+        <view class="meal-item" wx:for="{{todayMeals}}" wx:key="mealKey">
+          <view class="meal-info">
+            <text class="meal-label">{{item.mealLabel || item.mealKey}}</text>
+            <text class="meal-name">{{item.recipeName || '未安排'}}</text>
+            <text class="blw-tag" wx:if="{{item.blw}}">BLW</text>
+          </view>
+          <button class="btn-done" size="mini" data-mealkey="{{item.mealKey}}" data-date="{{today}}" data-recipeid="{{item.recipeId}}" data-recipename="{{item.recipeName}}" bindtap="onMarkDone">✔ 标记已做</button>
+        </view>
+      </view>
+    </view>
+    <view class="empty-tip" wx:else>
+      <text class="tip-text">还没有本周计划</text>
+      <navigator url="/pages/nextWeek/nextWeek?generateThisWeek=1" class="btn-generate-plan">生成本周计划</navigator>
+    </view>
+
+    <view class="tomorrow-tip tip-text" wx:if="{{tomorrowTip}}">
+      {{tomorrowTip}}
+    </view>
+
+    <view class="next-week-entry" wx:if="{{nextWeekStartDate}}">
+      <text class="next-week-label" wx:if="{{nextWeekStatus === 'generated'}}">🌿 下周计划已准备</text>
+      <text class="next-week-label" wx:else>下周计划</text>
+      <navigator wx:if="{{nextWeekStatus === 'generated'}}" url="/pages/week/week?weekStartDate={{nextWeekStartDate}}" class="action-btn">查看下周计划</navigator>
+      <navigator wx:else url="/pages/nextWeek/nextWeek" class="action-btn">生成下周计划</navigator>
+    </view>
+
+    <view class="actions">
+      <navigator url="/pages/week/week" class="action-btn">本周计划</navigator>
+      <navigator url="/pages/shopping/shopping" class="action-btn">购物清单</navigator>
+    </view>
+  </block>
+</view>

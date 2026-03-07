@@ -1,0 +1,22 @@
+<view class="container">
+  <view class="tip tip-text">✔️ 编辑后会影响所有绑定该模板的日期哦</view>
+
+  <view class="field">
+    <text class="label">模板名称</text>
+    <input class="input" value="{{name}}" placeholder="例如：默认一周" bindinput="onNameInput" />
+  </view>
+
+  <view class="meals-section">
+    <text class="section-title">5 餐 + BLW 开关</text>
+    <view class="meal-block" wx:for="{{meals}}" wx:key="mealKey">
+      <text class="meal-label">{{item.label}}</text>
+      <switch checked="{{item.defaultBlw}}" data-index="{{index}}" bindchange="onBlwChange" />
+    </view>
+  </view>
+
+  <view class="footer-tip tip-text">👉 每餐菜谱池在「我的菜谱」中维护，生成计划时自动从池中挑选</view>
+</view>
+
+<view class="footer-fixed">
+  <button class="btn-primary" bindtap="onSave">保存模板</button>
+</view>

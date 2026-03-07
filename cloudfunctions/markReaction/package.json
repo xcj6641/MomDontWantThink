@@ -1,0 +1,9 @@
+{
+  "name": "markReaction",
+  "version": "1.0.0",
+  "description": "异常反应标记",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

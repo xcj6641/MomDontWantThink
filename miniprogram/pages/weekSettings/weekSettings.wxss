@@ -1,0 +1,147 @@
+.container {
+  padding: 32rpx;
+  padding-bottom: 180rpx;
+}
+
+.header {
+  margin-bottom: 32rpx;
+}
+
+.header .title {
+  display: block;
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.header .subtitle {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.section {
+  margin-bottom: 32rpx;
+}
+
+.section-n {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 28rpx;
+  background: #f8f8f8;
+  border-radius: 16rpx;
+}
+
+.section-n .label {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+}
+
+.stepper-btn {
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  padding: 0;
+  font-size: 36rpx;
+  color: #07c160;
+  background: #fff;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+}
+
+.stepper-btn[disabled] {
+  color: #ccc;
+  border-color: #eee;
+}
+
+.stepper-n {
+  font-size: 32rpx;
+  font-weight: 600;
+  min-width: 48rpx;
+  text-align: center;
+}
+
+.tabs-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
+  background: #f5f5f5;
+}
+
+.tab-item.active {
+  background: #e8f5e9;
+  font-weight: 600;
+}
+
+.tab-item .dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+
+.tab-item .tab-text {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.date-row {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.day-cell {
+  flex: 1;
+  min-width: 72rpx;
+  padding: 24rpx 8rpx;
+  text-align: center;
+  border-radius: 12rpx;
+  border: 2rpx solid #e0e0e0;
+}
+
+.day-cell.unassigned {
+  background: #fff;
+  color: #999;
+  border-color: #e0e0e0;
+}
+
+.day-cell .day-label {
+  font-size: 24rpx;
+}
+
+.footer-fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+}

@@ -1,0 +1,13 @@
+<view class="template-tabs">
+  <view
+    class="tab-item {{activeId === item.id ? 'active' : ''}}"
+    wx:for="{{tabs}}"
+    wx:key="id"
+    data-id="{{item.id}}"
+    data-index="{{index}}"
+    bindtap="onTap"
+  >
+    <view class="dot" style="background-color: {{item.color}};"></view>
+    <text class="tab-text">{{item.name}}</text>
+  </view>
+</view>

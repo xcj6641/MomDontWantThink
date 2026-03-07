@@ -1,0 +1,43 @@
+{
+  "subPackages": [],
+  "pages": [
+    "pages/home/home",
+    "pages/me/me",
+    "pages/week/week",
+    "pages/weekSettings/weekSettings",
+    "pages/templateEdit/templateEdit",
+    "pages/dayEdit/dayEdit",
+    "pages/nextWeek/nextWeek",
+    "pages/shopping/shopping",
+    "pages/logs/logs",
+    "pages/recipes/recipes",
+    "pages/recipeEdit/recipeEdit",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "妈妈小助理|辅食计划",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "辅食",
+        "iconPath": "assets/tab-home.png",
+        "selectedIconPath": "assets/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/me/me",
+        "text": "我的",
+        "iconPath": "assets/tab-me.png",
+        "selectedIconPath": "assets/tab-me-active.png"
+      }
+    ]
+  },
+  "style": "v2"
+}

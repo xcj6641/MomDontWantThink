@@ -1,0 +1,373 @@
+.container {
+  padding-bottom: 48rpx;
+}
+
+.page-header {
+  padding: 24rpx 0 32rpx;
+}
+.header-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+.header-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.loading-block {
+  padding: 20rpx 0;
+}
+.loading-text {
+  display: block;
+  font-size: 28rpx;
+  color: #666;
+  margin-bottom: 24rpx;
+}
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.skeleton-card {
+  height: 200rpx;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+}
+
+/* §4 本周备餐设置区 */
+.settings-inline {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+.settings-block-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+}
+.settings-row-adjust {
+  margin-bottom: 20rpx;
+  padding: 16rpx 0;
+  align-items: center;
+}
+.settings-row-adjust:active {
+  opacity: 0.85;
+}
+.settings-summary-text {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+.settings-row-arrow {
+  font-size: 28rpx;
+  color: #07c160;
+}
+.date-assign-section {
+  margin-bottom: 16rpx;
+}
+.date-assign-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+}
+.date-assign-subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-top: 4rpx;
+}
+.settings-tabs-scroll {
+  width: 100%;
+  white-space: nowrap;
+  margin-bottom: 16rpx;
+}
+.settings-tabs-scroll .settings-tabs {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 12rpx;
+  padding-right: 24rpx;
+}
+.settings-tabs {
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+.settings-tab {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 12rpx;
+  background: #f5f5f5;
+  font-size: 24rpx;
+  color: #333;
+}
+.settings-tab.active {
+  background: #e8f5e9;
+  font-weight: 600;
+}
+.settings-tab-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}
+/* 7 天一行不换行 */
+.settings-days-row {
+  flex-wrap: nowrap;
+  gap: 6rpx;
+}
+.settings-day-cell {
+  flex: 1;
+  min-width: 0;
+  padding: 16rpx 4rpx;
+  text-align: center;
+  border-radius: 10rpx;
+  border: 2rpx solid #e0e0e0;
+}
+.settings-day-cell.unassigned {
+  background: #fff;
+  color: #999;
+  border-color: #e0e0e0;
+}
+.settings-day-label {
+  font-size: 22rpx;
+  display: block;
+}
+
+.template-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.template-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+.template-card-header {
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.template-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: nowrap;
+  margin-bottom: 8rpx;
+}
+.template-card-title-row .template-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.template-card-title-row .template-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  flex-shrink: 0;
+}
+.template-dates-compact {
+  flex: 1;
+  font-size: 24rpx;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.template-card-menu {
+  font-size: 32rpx;
+  color: #999;
+  padding: 8rpx 0 8rpx 16rpx;
+  flex-shrink: 0;
+}
+.template-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+}
+.template-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+.template-dates-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8rpx;
+}
+.date-chip {
+  font-size: 24rpx;
+  color: #07c160;
+  padding: 6rpx 16rpx;
+  background: #e8f8f0;
+  border-radius: 12rpx;
+}
+.date-chip:active {
+  opacity: 0.8;
+}
+.meal-label.has-override {
+  color: #999;
+}
+.template-meals {
+  margin-bottom: 20rpx;
+}
+.template-card .meal-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 10rpx 0;
+  font-size: 28rpx;
+}
+.template-card .meal-label {
+  flex-shrink: 0;
+  color: #666;
+}
+.template-card .meal-name {
+  flex: 1;
+  color: #333;
+  min-width: 0;
+}
+.template-card .meal-name-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.template-card.placeholder .template-meals .meal-name {
+  color: #999;
+}
+.placeholder-hint {
+  display: block;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  padding: 16rpx 0;
+}
+
+.confirm-area {
+  margin-top: 48rpx;
+  padding: 0 0 32rpx;
+}
+.confirm-area .btn-confirm-week {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  border: none;
+}
+.confirm-hint {
+  display: block;
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 16rpx;
+}
+
+/* 备餐套数弹框 */
+.menu-count-modal-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+}
+.menu-count-modal-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
+  z-index: 101;
+}
+.menu-count-modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 32rpx;
+  text-align: center;
+}
+.menu-count-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-bottom: 32rpx;
+}
+.menu-count-opt {
+  width: calc((100% - 60rpx) / 4);
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #333;
+  background: #f5f5f5;
+  border-radius: 12rpx;
+}
+.menu-count-opt.selected {
+  background: #e8f8f0;
+  color: #07c160;
+  font-weight: 600;
+}
+.menu-count-checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 32rpx;
+  padding: 16rpx 0;
+}
+.menu-count-checkbox-icon {
+  font-size: 36rpx;
+  color: #07c160;
+}
+.menu-count-checkbox-label {
+  font-size: 28rpx;
+  color: #333;
+}
+.menu-count-save-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  border: none;
+}
+.menu-count-save-btn::after {
+  border: none;
+}
+
+.empty {
+  padding: 48rpx 0;
+  text-align: center;
+}
+.tip-text {
+  font-size: 28rpx;
+  color: #666;
+}
+.btn-primary {
+  font-size: 28rpx;
+  color: #07c160;
+}

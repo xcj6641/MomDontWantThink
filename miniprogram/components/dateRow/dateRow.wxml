@@ -1,0 +1,13 @@
+<view class="date-rows">
+  <view
+    class="date-row {{item.assignState}}"
+    wx:for="{{items}}"
+    wx:key="date"
+    data-index="{{index}}"
+    bindtap="onTap"
+  >
+    <text class="date-text">{{item.date}}</text>
+    <text class="weekday-text">{{item.weekday}}</text>
+    <text class="template-name">{{item.templateName || '未分配'}}</text>
+  </view>
+</view>

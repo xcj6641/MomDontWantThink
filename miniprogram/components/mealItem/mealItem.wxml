@@ -1,0 +1,12 @@
+<view class="meal-item-root">
+  <view class="info">
+    <text class="meal-label">{{meal.mealLabel}}</text>
+    <text class="meal-name">{{meal.recipeName || '未安排'}}</text>
+    <text class="blw-tag" wx:if="{{meal.blw}}">BLW</text>
+  </view>
+  <view class="actions">
+    <button class="action-btn" size="mini" bindtap="onView">查看做法</button>
+    <button class="action-btn" size="mini" bindtap="onShuffle">🔄</button>
+    <button class="action-btn" size="mini" bindtap="onDone">✔</button>
+  </view>
+</view>

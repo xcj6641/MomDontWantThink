@@ -1,0 +1,27 @@
+<view class="container">
+  <view class="summary-row">
+    <text class="tip-text">已备 {{summary.preparedCount}} / 共 {{summary.totalCount}}</text>
+  </view>
+
+  <view class="by-category" wx:if="{{categoryList.length > 0}}">
+    <view class="category-block" wx:for="{{categoryList}}" wx:key="name">
+      <text class="category-name">{{item.name}}</text>
+      <view
+        class="item-row {{it.prepared ? 'prepared' : ''}}"
+        wx:for="{{item.items}}"
+        wx:for-item="it"
+        wx:key="ingredientName"
+        data-category="{{item.name}}"
+        data-name="{{it.ingredientName}}"
+        bindtap="onToggleItem"
+      >
+        <text class="item-name">{{it.ingredientName}}</text>
+        <text class="item-amount">{{it.amount}}</text>
+        <text class="check">{{it.prepared ? '✔️' : '○'}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="empty" wx:else>
+    <text class="tip-text">👉 生成下周计划后会自动生成购物清单哦</text>
+  </view>
+</view>

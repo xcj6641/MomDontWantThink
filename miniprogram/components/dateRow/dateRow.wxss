@@ -1,0 +1,54 @@
+.date-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-bottom: 32rpx;
+}
+
+.date-row {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 28rpx;
+  border-radius: 12rpx;
+  transition: background 0.2s;
+}
+
+.date-row.unassigned {
+  background: #fff;
+  border: 2rpx solid #eee;
+}
+
+.date-row.assigned {
+  background: #f0f9f4;
+  border: 2rpx solid #e0f0e8;
+}
+
+.date-row.current {
+  background: #07c160;
+  border: 2rpx solid #06ad56;
+}
+
+.date-row.current .date-text,
+.date-row.current .weekday-text,
+.date-row.current .template-name {
+  color: #fff;
+}
+
+.date-text {
+  width: 180rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.weekday-text {
+  width: 80rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.template-name {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666;
+}

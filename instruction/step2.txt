@@ -1,0 +1,15 @@
+请为该小程序设计云开发云数据库集合（Mongo风格）的 schema（集合名、字段、示例文档、建议索引）。
+必须包含以下集合并可支撑所有功能：
+- users
+- week_settings
+- week_plans（日期绑定+overrides，按周存或按日期存都可以，但要清晰）
+- templates（模板=整天菜单，含5餐与每餐mode(blw true/false)）
+- recipes（系统菜谱+用户自定义菜谱）
+- meal_logs（标记已做自动写入，支持reaction）
+- preferences（过敏食材、BLW喜欢/不喜欢）
+要求：
+1) 明确“周”的标识（如 weekStartDate=YYYY-MM-DD）。
+2) 明确字段命名规范（camelCase）。
+3) 给出每个集合的示例文档 JSON。
+4) 给出索引建议（按openid、weekStartDate、templateId、date等）。
+请输出为一个结构化文档，便于我照着在云开发控制台建集合。

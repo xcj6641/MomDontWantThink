@@ -1,0 +1,21 @@
+请为 MVP 设计云函数清单与接口契约（输入/输出 JSON），并说明每个云函数读写哪些集合。
+必须包含云函数（可按你命名）：
+1) initUser（确保users存在）
+2) getHomeData（返回今日菜单、明日准备提示、下周状态）
+3) generateNextWeek（沿用上周设置/偏好/分配结构，但重新生成模板内容；首次默认晚餐BLW；生成后写入下周数据）
+4) getWeekData（获取本周/下周：week_settings + templates + week_plans）
+5) updateWeekSettings（更新N套菜单+日期分配；确认时校验空白天；支持自动均匀分配空白天；N变小时将被删除模板的日期均匀分配给剩余模板）
+6) updateTemplate (编辑模板：影响所有绑定该模板的日期)
+7) updateDayOverride（改单日某餐：只影响当天overrides）
+8) buildShoppingList（按“最终菜单(含override)”汇总食材，返回分类列表+已备X/共Y；每周重置勾选状态）
+9) toggleShoppingItem（勾选购物项）
+10) logMealDone（标记已做：写meal_logs）
+11) markReaction（异常标记：rash/vomit/diarrhea/other）
+12) recipes CRUD（create/update/delete/listMyRecipes）
+请输出每个函数：
+- purpose
+- input JSON
+- output JSON
+- collections touched
+- error cases
+强调：不做医疗推断、不做营养统计。

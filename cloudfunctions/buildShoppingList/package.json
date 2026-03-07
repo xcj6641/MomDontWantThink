@@ -1,0 +1,9 @@
+{
+  "name": "buildShoppingList",
+  "version": "1.0.0",
+  "description": "构建购物清单",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

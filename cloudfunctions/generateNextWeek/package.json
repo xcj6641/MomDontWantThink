@@ -1,0 +1,9 @@
+{
+  "name": "generateNextWeek",
+  "version": "1.0.0",
+  "description": "生成下周计划",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

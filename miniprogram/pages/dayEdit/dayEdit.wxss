@@ -1,0 +1,77 @@
+.container {
+  padding-bottom: 48rpx;
+}
+
+.day-header {
+  padding: 24rpx 0 20rpx;
+}
+.day-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.meals-list {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 24rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.meal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.meal-row:last-child {
+  border-bottom: none;
+}
+
+.meal-info {
+  flex: 1;
+  min-width: 0;
+}
+.meal-label {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 6rpx;
+}
+.meal-name {
+  font-size: 30rpx;
+  color: #333;
+}
+
+.btn-shuffle {
+  flex-shrink: 0;
+  margin-left: 24rpx;
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+.footer-tip {
+  padding: 24rpx 0 16rpx;
+}
+
+.confirm-bar {
+  padding: 0 0 32rpx;
+}
+.btn-primary {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  border: none;
+}

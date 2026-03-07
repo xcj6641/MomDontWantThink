@@ -1,0 +1,24 @@
+<view class="container">
+  <view class="field">
+    <text class="label">菜谱名称</text>
+    <input class="input" value="{{name}}" placeholder="例如：南瓜粥" bindinput="onNameInput" />
+  </view>
+  <view class="field">
+    <text class="label">分类</text>
+    <picker mode="selector" range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+      <view class="picker">{{categoryText || '请选择'}}</view>
+    </picker>
+  </view>
+  <view class="field">
+    <text class="label">食材（名称 + 用量）</text>
+    <view class="ingredient-item" wx:for="{{ingredients}}" wx:key="index">
+      <input placeholder="名称" value="{{item.name}}" data-index="{{index}}" data-field="name" bindinput="onIngredientInput" />
+      <input placeholder="用量" value="{{item.amount}}" data-index="{{index}}" data-field="amount" bindinput="onIngredientInput" />
+    </view>
+    <view class="add-ingredient" bindtap="onAddIngredient">+ 添加食材</view>
+  </view>
+</view>
+
+<view class="footer-fixed">
+  <button class="btn-primary" bindtap="onSave">保存</button>
+</view>

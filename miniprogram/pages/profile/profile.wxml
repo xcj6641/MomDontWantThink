@@ -1,0 +1,49 @@
+<view class="container">
+  <view class="tip tip-text">👉 仅用于生成计划时排除/偏好，不做医疗推断哦</view>
+
+  <view class="block">
+    <text class="block-title">宝宝月龄（必填）</text>
+    <input
+      class="input"
+      type="number"
+      placeholder="整数，如 11"
+      value="{{babyAgeMonths}}"
+      bindinput="onBabyAgeInput"
+    />
+    <text class="block-hint">生成计划前须填写，用于匹配适龄菜谱与餐次</text>
+  </view>
+
+  <view class="block">
+    <text class="block-title">过敏/忌口食材</text>
+    <textarea
+      class="textarea"
+      placeholder="多个用逗号分隔，如：芒果,虾"
+      value="{{allergyText}}"
+      bindinput="onAllergyInput"
+    />
+  </view>
+
+  <view class="block">
+    <text class="block-title">BLW 喜欢（食材或菜名）</text>
+    <textarea
+      class="textarea"
+      placeholder="如：胡萝卜,西兰花"
+      value="{{blwLikesText}}"
+      bindinput="onBlwLikesInput"
+    />
+  </view>
+
+  <view class="block">
+    <text class="block-title">BLW 不喜欢</text>
+    <textarea
+      class="textarea"
+      placeholder="如：苦瓜"
+      value="{{blwDislikesText}}"
+      bindinput="onBlwDislikesInput"
+    />
+  </view>
+</view>
+
+<view class="footer-fixed">
+  <button class="btn-primary" bindtap="onSave">保存偏好</button>
+</view>

@@ -1,0 +1,45 @@
+<view class="container">
+  <view class="header">
+    <text class="title">本周备餐分配</text>
+    <text class="subtitle">👉 选中一个备餐，再点日期完成分配</text>
+  </view>
+
+  <view class="section section-n">
+    <text class="label">本周备 {{N}} 套菜单</text>
+    <view class="stepper">
+      <button class="stepper-btn" disabled="{{N <= 2}}" data-value="-1" bindtap="onNStepperTap">－</button>
+      <text class="stepper-n">{{N}}</text>
+      <button class="stepper-btn" disabled="{{N >= 7}}" data-value="1" bindtap="onNStepperTap">＋</button>
+    </view>
+  </view>
+
+  <view class="section tabs-section">
+    <view
+      class="tab-item {{selectedTemplateIndex === item + 1 ? 'active' : ''}}"
+      wx:for="{{tabList}}"
+      wx:key="*this"
+      data-index="{{item}}"
+      bindtap="onTemplateTabTap"
+    >
+      <view class="dot" style="background-color: {{templateColors[item]}};"></view>
+      <text class="tab-text">备餐{{item + 1}}</text>
+    </view>
+  </view>
+
+  <view class="section date-row">
+    <view
+      class="day-cell {{item.isUnassigned ? 'unassigned' : ''}} {{item.isCurrent ? 'current' : 'assigned'}}"
+      style="{{item.bgStyle}}"
+      wx:for="{{dayCellList}}"
+      wx:key="day"
+      data-day="{{item.day}}"
+      bindtap="onDayTap"
+    >
+      <text class="day-label">{{item.weekday}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="footer-fixed">
+  <button class="btn-primary" bindtap="onConfirm" loading="{{saving}}">确认</button>
+</view>

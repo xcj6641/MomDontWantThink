@@ -1,0 +1,28 @@
+<view class="container">
+  <view class="user-card">
+    <image class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill" />
+    <text class="nickname">{{userInfo.nickName || '点击头像登录'}}</text>
+  </view>
+
+  <view class="menu-list">
+    <navigator url="/pages/profile/profile" class="menu-item">
+      <text>宝宝信息</text>
+      <text class="tip-text">过敏食材、BLW喜欢/不喜欢</text>
+      <text class="arrow">›</text>
+    </navigator>
+    <navigator url="/pages/recipes/recipes" class="menu-item">
+      <text>我的菜谱</text>
+      <text class="tip-text">管理常用菜谱</text>
+      <text class="arrow">›</text>
+    </navigator>
+    <navigator url="/pages/logs/logs" class="menu-item">
+      <text>进食记录</text>
+      <text class="tip-text">按天倒序、异常标记</text>
+      <text class="arrow">›</text>
+    </navigator>
+  </view>
+
+  <view class="footer-tip tip-text">
+    ✔️ 已帮你保存偏好，生成计划时会自动排除过敏食材哦
+  </view>
+</view>

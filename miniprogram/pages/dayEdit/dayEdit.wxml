@@ -1,0 +1,20 @@
+<view class="container">
+  <view class="day-header">
+    <text class="day-title">{{weekdayLabel}}（使用：{{templateName || '备餐'}}）</text>
+  </view>
+
+  <view class="meals-list">
+    <view class="meal-row" wx:for="{{meals}}" wx:key="mealKey">
+      <view class="meal-info">
+        <text class="meal-label">{{item.mealLabel}}</text>
+        <text class="meal-name">{{item.recipeName || '未安排'}}</text>
+      </view>
+      <button class="btn-shuffle" size="mini" data-mealkey="{{item.mealKey}}" bindtap="onShuffleMeal">🔄 换一个</button>
+    </view>
+  </view>
+
+  <view class="footer-tip tip-text">修改仅影响当天，确认后返回计划页</view>
+  <view class="confirm-bar">
+    <button class="btn-primary" bindtap="onSave">确认修改</button>
+  </view>
+</view>
