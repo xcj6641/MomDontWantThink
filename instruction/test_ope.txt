@@ -1,2 +1,0 @@
-若仍想验证“首次使用”的初始页
-可在云开发控制台把该用户的 preferences 里 babyBirthday 清空或删掉该条，并把本周对应的 week_settings 的 confirmed 改为 false 或删掉该条，再重新打开辅食 tab，应会看到初始页。

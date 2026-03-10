@@ -1,0 +1,143 @@
+{
+  "description": "面向前端的 Mock 数据，与 baby-food-database-query-results.md 预期结果一致，供页面开发/联调使用",
+  "recipeDetail": {
+    "comment": "菜谱详情页：接口 GET /recipe/:id 或云函数 getRecipeDetail",
+    "basic": {
+      "id": 1,
+      "name": "胡萝卜鸡肉粥",
+      "stage": 2,
+      "ageMonthMin": 6,
+      "ageMonthMax": 7,
+      "type": "porridge",
+      "texture": "porridge",
+      "description": "适合 6–7 月龄的软烂粥品"
+    },
+    "steps": [
+      { "stepNo": 1, "content": "大米淘净，加约 6 倍水浸泡 30 分钟。" },
+      { "stepNo": 2, "content": "胡萝卜去皮切小丁，鸡胸肉剁成泥。" },
+      { "stepNo": 3, "content": "将米、胡萝卜丁、鸡肉泥一起放入锅中，大火煮开后转小火熬至软烂。" }
+    ],
+    "ingredients": [
+      {
+        "name": "大米",
+        "amountValue": 30,
+        "amountText": null,
+        "unit": "g",
+        "amountDisplay": "30g",
+        "ingredientRole": "base",
+        "weekendPrepType": "none",
+        "dailyPrepType": "porridge_night_before"
+      },
+      {
+        "name": "胡萝卜",
+        "amountValue": 20,
+        "amountText": null,
+        "unit": "g",
+        "amountDisplay": "20g",
+        "ingredientRole": "vegetable",
+        "weekendPrepType": "frozen_puree",
+        "dailyPrepType": "thaw"
+      },
+      {
+        "name": "鸡胸肉",
+        "amountValue": 25,
+        "amountText": null,
+        "unit": "g",
+        "amountDisplay": "25g",
+        "ingredientRole": "protein",
+        "weekendPrepType": "frozen_minced",
+        "dailyPrepType": "thaw"
+      }
+    ],
+    "prepSummary": {
+      "weekend": [
+        "胡萝卜 20g 打成泥冷冻",
+        "鸡胸肉 25g 剁碎冷冻"
+      ],
+      "dayBefore": [
+        "大米 30g 提前煮粥",
+        "胡萝卜 20g 解冻",
+        "鸡胸肉 25g 解冻"
+      ]
+    }
+  },
+  "weekendPrep": {
+    "comment": "周末备菜页：按处理方式分组，接口 GET /weekend-prep?planId=1 或云函数 getWeekendPrepSummary",
+    "planId": 1,
+    "groupByPrepType": [
+      {
+        "weekendPrepCode": "frozen_puree",
+        "weekendPrepLabel": "打成泥冷冻",
+        "actionText": "蒸熟打泥分格冷冻",
+        "storage": "冷冻",
+        "items": [
+          { "ingredientName": "胡萝卜", "totalAmountValue": 40, "unit": "g", "amountDisplay": "40g", "distinctRecipeCount": 1, "planItemCount": 2 },
+          { "ingredientName": "西兰花", "totalAmountValue": 20, "unit": "g", "amountDisplay": "20g", "distinctRecipeCount": 1, "planItemCount": 1 },
+          { "ingredientName": "土豆", "totalAmountValue": 50, "unit": "g", "amountDisplay": "50g", "distinctRecipeCount": 1, "planItemCount": 1 }
+        ]
+      },
+      {
+        "weekendPrepCode": "frozen_minced",
+        "weekendPrepLabel": "剁碎冷冻",
+        "actionText": "剁碎分装冷冻",
+        "storage": "冷冻",
+        "items": [
+          { "ingredientName": "鸡胸肉", "totalAmountValue": 50, "unit": "g", "amountDisplay": "50g", "distinctRecipeCount": 1, "planItemCount": 2 }
+        ]
+      }
+    ]
+  },
+  "dayBeforeReminder": {
+    "comment": "前一天提醒页：指定日期+餐次，接口 GET /day-before-reminder?planId=1&date=2025-03-04&mealType=lunch 或云函数 getDayBeforeReminder",
+    "planId": 1,
+    "date": "2025-03-04",
+    "mealType": "lunch",
+    "mealTypeLabel": "午餐",
+    "recipeName": "胡萝卜鸡肉粥",
+    "items": [
+      {
+        "ingredientName": "大米",
+        "amountDisplay": "30g",
+        "dailyPrepLabel": "提前煮粥",
+        "dailyActionText": "前一晚煮好保温/冷藏"
+      },
+      {
+        "ingredientName": "胡萝卜",
+        "amountDisplay": "20g",
+        "dailyPrepLabel": "解冻",
+        "dailyActionText": "前一晚放入冷藏解冻"
+      },
+      {
+        "ingredientName": "鸡胸肉",
+        "amountDisplay": "25g",
+        "dailyPrepLabel": "解冻",
+        "dailyActionText": "前一晚放入冷藏解冻"
+      }
+    ],
+    "userFriendlyCopy": {
+      "short": "明天午餐：胡萝卜鸡肉粥。前一晚需：大米 30g 提前煮粥；胡萝卜 20g、鸡胸肉 25g 解冻。",
+      "list": [
+        "明天午餐做「胡萝卜鸡肉粥」",
+        "前一晚：大米 30g 提前煮好保温/冷藏",
+        "前一晚：胡萝卜 20g、鸡胸肉 25g 放入冷藏解冻"
+      ],
+      "grouped": [
+        {
+          "dailyPrepLabel": "提前煮粥",
+          "dailyActionText": "前一晚煮好保温/冷藏",
+          "items": [
+            { "ingredientName": "大米", "amountDisplay": "30g" }
+          ]
+        },
+        {
+          "dailyPrepLabel": "解冻",
+          "dailyActionText": "前一晚放入冷藏解冻",
+          "items": [
+            { "ingredientName": "胡萝卜", "amountDisplay": "20g" },
+            { "ingredientName": "鸡胸肉", "amountDisplay": "25g" }
+          ]
+        }
+      ]
+    }
+  }
+}

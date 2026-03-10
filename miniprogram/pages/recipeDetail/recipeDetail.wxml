@@ -1,0 +1,92 @@
+<view class="page" wx:if="{{!loading && basic}}">
+  <!-- 内容区：仅阅读信息，菜谱 → 提前准备 → 食材 → 做法 -->
+  <view class="page-content">
+    <!-- 1. 菜谱信息主卡片：轻微主题背景 + 收藏右上角 -->
+    <view class="card recipe-hero">
+      <view class="recipe-hero-head">
+        <text class="recipe-hero-title">🥣 {{basic.name}}</text>
+        <view class="recipe-hero-collect {{collected ? 'active' : ''}} {{collectAnim ? 'animate' : ''}}" bindtap="onCollect">
+          <image class="collect-icon" src="{{collected ? iconStarFilled : iconStarOutline}}" mode="aspectFit"/>
+        </view>
+      </view>
+      <view class="recipe-hero-tags" wx:if="{{basic.ageLabel || basic.typeLabel || basic.textureLabel}}">
+        <text class="recipe-hero-tag" wx:if="{{basic.ageLabel}}">{{basic.ageLabel}}</text>
+        <text class="recipe-hero-tag" wx:if="{{basic.typeLabel}}">{{basic.typeLabel}}</text>
+        <text class="recipe-hero-tag" wx:if="{{basic.textureLabel}}">{{basic.textureLabel}}</text>
+      </view>
+      <text class="recipe-hero-desc" wx:if="{{basic.description}}">{{basic.description}}</text>
+    </view>
+
+    <!-- 2. 备菜小提醒：标题 + 分组 + 列表（无内嵌背景块） -->
+    <view class="card card-prep" wx:if="{{(prepSummary.weekend && prepSummary.weekend.length) || (prepSummary.dayBefore && prepSummary.dayBefore.length)}}">
+      <view class="prep-main-title">
+        <text class="prep-main-title-text">📦 备菜小提醒</text>
+      </view>
+      <view class="prep-group" wx:if="{{prepSummary.weekend && prepSummary.weekend.length}}">
+        <view class="prep-group-title">周末备菜</view>
+        <view class="prep-item" wx:for="{{prepSummary.weekend}}" wx:key="*this">• {{item}}</view>
+      </view>
+      <view class="prep-group" wx:if="{{prepSummary.dayBefore && prepSummary.dayBefore.length}}">
+        <view class="prep-group-title">前一晚准备</view>
+        <view class="prep-item" wx:for="{{prepSummary.dayBefore}}" wx:key="*this">• {{item}}</view>
+      </view>
+    </view>
+
+    <!-- 3. 食材 -->
+    <view class="card">
+      <view class="card-title card-title-border">
+        <text class="card-title-text">🥕 食材</text>
+      </view>
+      <view class="ingredient-row" wx:for="{{ingredients}}" wx:key="name">
+        <text class="ingredient-name">{{item.name}}</text>
+        <text class="ingredient-amount">{{item.amountDisplay}}</text>
+      </view>
+    </view>
+
+    <!-- 4. 做法 -->
+    <view class="card">
+      <view class="card-title card-title-border">
+        <text class="card-title-text">🍲 做法</text>
+      </view>
+      <view class="step-item" wx:for="{{steps}}" wx:key="stepNo">
+        <text class="step-num">{{item.stepNo == 1 ? '①' : item.stepNo == 2 ? '②' : item.stepNo == 3 ? '③' : item.stepNo == 4 ? '④' : item.stepNo == 5 ? '⑤' : item.stepNo + '.'}}</text>
+        <text class="step-content">{{item.content}}</text>
+      </view>
+    </view>
+
+    <!-- 小提示 -->
+    <view class="card" wx:if="{{tips && tips.length}}">
+      <view class="card-title card-title-border">
+        <text class="card-title-text">💡 小提示</text>
+      </view>
+      <view class="tip-item" wx:for="{{tips}}" wx:key="*this">{{item}}</view>
+    </view>
+  </view>
+
+  <!-- 底部固定操作栏：收藏 / 宝宝喜欢 / 不爱吃 / 换一个 -->
+  <view class="bottom-bar">
+    <view class="bottom-btn collect {{collected ? 'active' : ''}} {{collectAnim ? 'animate' : ''}}" bindtap="onCollect">
+      <image class="bottom-btn-icon" src="{{collected ? iconStarFilled : iconStarOutline}}" mode="aspectFit"/>
+      <text class="bottom-btn-text">收藏</text>
+    </view>
+    <view class="bottom-btn like {{feedback === 'like' ? 'active' : ''}} {{likeAnim ? 'heart-beat' : ''}}" bindtap="onLike">
+      <image class="bottom-btn-icon" src="{{feedback === 'like' ? iconHeartFilled : iconHeartOutline}}" mode="aspectFit"/>
+      <text class="bottom-btn-text">宝宝喜欢</text>
+    </view>
+    <view class="bottom-btn dislike {{feedback === 'dislike' ? 'active' : ''}}" bindtap="onDislike">
+      <image class="bottom-btn-icon" src="{{feedback === 'dislike' ? iconThumbDownFilled : iconThumbDownOutline}}" mode="aspectFit"/>
+      <text class="bottom-btn-text">不爱吃</text>
+    </view>
+    <view class="bottom-btn change {{replaceAnim ? 'rotate' : ''}}" bindtap="onReplace">
+      <image class="bottom-btn-icon {{replaceAnim ? 'icon-rotating' : ''}}" src="{{iconRefresh}}" mode="aspectFit"/>
+      <text class="bottom-btn-text">换一个</text>
+    </view>
+  </view>
+</view>
+
+<view class="loading-wrap" wx:elif="{{loading}}">
+  <text class="loading-text">加载中…</text>
+</view>
+<view class="empty-wrap" wx:else>
+  <text class="empty-text">未找到该菜谱</text>
+</view>

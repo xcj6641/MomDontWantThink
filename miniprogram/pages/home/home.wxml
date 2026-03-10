@@ -56,7 +56,7 @@
     </view>
     <view class="empty-tip" wx:else>
       <text class="tip-text">还没有本周计划</text>
-      <navigator url="/pages/nextWeek/nextWeek?generateThisWeek=1" class="btn-generate-plan">生成本周计划</navigator>
+      <navigator url="/pages/week/week?weekStartDate={{thisWeekStartDate}}&needConfirm=1" class="btn-generate-plan">生成本周计划</navigator>
     </view>
 
     <view class="tomorrow-tip tip-text" wx:if="{{tomorrowTip}}">
@@ -67,7 +67,7 @@
       <text class="next-week-label" wx:if="{{nextWeekStatus === 'generated'}}">🌿 下周计划已准备</text>
       <text class="next-week-label" wx:else>下周计划</text>
       <navigator wx:if="{{nextWeekStatus === 'generated'}}" url="/pages/week/week?weekStartDate={{nextWeekStartDate}}" class="action-btn">查看下周计划</navigator>
-      <navigator wx:else url="/pages/nextWeek/nextWeek" class="action-btn">生成下周计划</navigator>
+      <navigator wx:else url="/pages/week/week?weekStartDate={{nextWeekStartDate}}&needConfirm=1" class="action-btn">生成下周计划</navigator>
     </view>
 
     <view class="actions">

@@ -1,6 +1,7 @@
 // pages/home/home.ts
 const { callCloud } = require('../../utils/cloud.js')
 const { MEAL_LABELS } = require('../../utils/ageMealConfig.js')
+const { generateMockWeekPlan, getWeekDates, getUseMockWeekPlan } = require('../../utils/weekPlanMock.js')
 
 Page({
   data: {
@@ -103,7 +104,7 @@ Page({
       todayMeals,
       tomorrowTip: result.tomorrowTip || '记得备好食材哦',
       nextWeekStatus: result.nextWeekStatus || 'none',
-      nextWeekStartDate: result.nextWeekStartDate || '',
+      nextWeekStartDate: result.nextWeekStartDate || this.getNextMonday(),
     })
   },
 
@@ -154,16 +155,21 @@ Page({
       wx.showToast({ title: '我这边有点忙，稍后再试一次～', icon: 'none' })
       return
     }
-    const genRes = await callCloud('generateNextWeek', { nextWeekStartDate: thisWeekStartDate }, { showLoading: true, loadingTitle: '正在帮你生成…' })
+    const weekStart = thisWeekStartDate || this.getThisMonday()
+    if (getUseMockWeekPlan()) {
+      const weekDates = getWeekDates(weekStart)
+      const result = generateMockWeekPlan(3, weekDates)
+      wx.setStorageSync('mockWeekPlan', JSON.stringify(result))
+      this.setData({ generating: false })
+      wx.navigateTo({
+        url: `/pages/week/week?weekStartDate=${weekStart}&needConfirm=1&useMock=1`,
+      })
+      return
+    }
+    const genRes = await callCloud('generateNextWeek', { nextWeekStartDate: weekStart }, { showLoading: true, loadingTitle: '正在帮你生成…' })
     this.setData({ generating: false })
-    if (genRes.success) {
-      wx.navigateTo({
-        url: `/pages/week/week?weekStartDate=${thisWeekStartDate}&needConfirm=1`,
-      })
-    } else if (genRes.code === 'WEEK_ALREADY_EXISTS') {
-      wx.navigateTo({
-        url: `/pages/week/week?weekStartDate=${thisWeekStartDate}&needConfirm=1`,
-      })
+    if (genRes.success || genRes.code === 'WEEK_ALREADY_EXISTS') {
+      wx.navigateTo({ url: `/pages/week/week?weekStartDate=${weekStart}&needConfirm=1` })
     } else if (genRes.code === 'MISSING_BABY_AGE') {
       wx.showToast({ title: '👉 先选择宝宝生日', icon: 'none' })
     } else {

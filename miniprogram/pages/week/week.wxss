@@ -1,30 +1,53 @@
+/* ========== 整体：页面背景 + 卡片层级 ========== */
 .container {
-  padding-bottom: 48rpx;
+  min-height: 100vh;
+  background: #F7F8FA;
+  padding: 24rpx 24rpx 48rpx;
+  box-sizing: border-box;
 }
 
-.page-header {
-  padding: 24rpx 0 32rpx;
+/* ========== 顶部状态提示卡片：独立信息卡 ========== */
+.welcome-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  background: #EAF7EF;
+  border: 2rpx solid #E3EFE7;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  margin-bottom: 40rpx;
+  box-sizing: border-box;
 }
-.header-title {
+.welcome-card-icon {
+  font-size: 44rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.welcome-card-body {
+  flex: 1;
+  min-width: 0;
+}
+.welcome-title {
   display: block;
-  font-size: 36rpx;
+  font-size: 34rpx;
   font-weight: 600;
-  color: #333;
+  color: #2F5E3B;
   margin-bottom: 8rpx;
 }
-.header-subtitle {
+.welcome-subtitle {
   display: block;
   font-size: 26rpx;
-  color: #666;
+  color: #7A8A7E;
 }
 
+/* ========== 加载态 ========== */
 .loading-block {
   padding: 20rpx 0;
 }
 .loading-text {
   display: block;
   font-size: 28rpx;
-  color: #666;
+  color: #7A8A7E;
   margin-bottom: 24rpx;
 }
 .skeleton-list {
@@ -34,263 +57,261 @@
 }
 .skeleton-card {
   height: 200rpx;
-  background: #f5f5f5;
-  border-radius: 16rpx;
+  background: rgba(255,255,255,0.8);
+  border-radius: 32rpx;
 }
 
-/* §4 本周备餐设置区 */
-.settings-inline {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+/* ========== 日期分配区（无「本周备餐设置」标题） ========== */
+.date-district-card {
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  padding: 28rpx;
+  margin-bottom: 40rpx;
+  border: 2rpx solid #EEF1F4;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
 }
-.settings-block-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 16rpx;
-}
-.settings-row {
+.date-district-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
 }
-.settings-row-adjust {
-  margin-bottom: 20rpx;
-  padding: 16rpx 0;
-  align-items: center;
-}
-.settings-row-adjust:active {
+.date-district-head:active {
   opacity: 0.85;
 }
-.settings-summary-text {
+.date-district-title {
   font-size: 28rpx;
-  color: #333;
-  flex: 1;
-}
-.settings-row-arrow {
-  font-size: 28rpx;
-  color: #07c160;
-}
-.date-assign-section {
-  margin-bottom: 16rpx;
-}
-.date-assign-title {
-  display: block;
-  font-size: 26rpx;
   font-weight: 600;
-  color: #333;
+  color: #2F3A35;
 }
-.date-assign-subtitle {
-  display: block;
-  font-size: 24rpx;
-  color: #666;
-  margin-top: 4rpx;
+.date-district-adjust {
+  font-size: 26rpx;
+  color: #7A8A7E;
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
+  background: #F2F4F5;
 }
-.settings-tabs-scroll {
-  width: 100%;
-  white-space: nowrap;
-  margin-bottom: 16rpx;
-}
-.settings-tabs-scroll .settings-tabs {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  gap: 12rpx;
-  padding-right: 24rpx;
-}
-.settings-tabs {
+.prep-buttons {
+  display: flex;
   flex-wrap: wrap;
-  gap: 12rpx;
-  margin-bottom: 16rpx;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
 }
-.settings-tab {
+.prep-btn {
   display: flex;
   align-items: center;
-  gap: 6rpx;
-  padding: 10rpx 20rpx;
-  border-radius: 12rpx;
-  background: #f5f5f5;
-  font-size: 24rpx;
-  color: #333;
+  gap: 8rpx;
+  padding: 14rpx 26rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
 }
-.settings-tab.active {
-  background: #e8f5e9;
+.prep-btn.active {
   font-weight: 600;
 }
-.settings-tab-dot {
+.prep-btn:active {
+  opacity: 0.9;
+}
+.prep-btn-dot {
   width: 12rpx;
   height: 12rpx;
   border-radius: 50%;
+  flex-shrink: 0;
 }
-/* 7 天一行不换行 */
-.settings-days-row {
+.week-days-row {
+  display: flex;
   flex-wrap: nowrap;
-  gap: 6rpx;
+  gap: 12rpx;
 }
-.settings-day-cell {
+.week-day-cell {
   flex: 1;
   min-width: 0;
-  padding: 16rpx 4rpx;
+  padding: 18rpx 6rpx;
   text-align: center;
-  border-radius: 10rpx;
-  border: 2rpx solid #e0e0e0;
+  border-radius: 20rpx;
+  border: none;
 }
-.settings-day-cell.unassigned {
-  background: #fff;
+.week-day-cell.unassigned {
+  background: #F7F8FA;
   color: #999;
-  border-color: #e0e0e0;
 }
-.settings-day-label {
+.week-day-cell:active {
+  opacity: 0.9;
+}
+.week-day-label {
   font-size: 22rpx;
   display: block;
 }
 
+/* ========== 分组标题：备餐安排 ========== */
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 24rpx;
+}
+.section-title-icon {
+  font-size: 32rpx;
+}
+.section-title-text {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2F3A35;
+}
+
+/* ========== 备餐卡片：顶部彩色条 + 白底 + 边框 + 阴影 ========== */
 .template-cards {
   display: flex;
   flex-direction: column;
-  gap: 24rpx;
+  gap: 32rpx;
 }
 .template-card {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+  background: #FFFFFF;
+  border-radius: 32rpx;
+  overflow: hidden;
+  border: 2rpx solid #EEF1F4;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+}
+.template-card-accent {
+  height: 8rpx;
+  width: 100%;
+  flex-shrink: 0;
 }
 .template-card-header {
-  margin-bottom: 20rpx;
-  padding-bottom: 16rpx;
-  border-bottom: 1rpx solid #f0f0f0;
+  padding: 24rpx 28rpx 20rpx;
 }
-.template-card-title-row {
+.template-header-inner {
   display: flex;
   align-items: center;
   gap: 12rpx;
-  flex-wrap: nowrap;
-  margin-bottom: 8rpx;
+  margin-bottom: 16rpx;
 }
-.template-card-title-row .template-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 50%;
+.template-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
   flex-shrink: 0;
-}
-.template-card-title-row .template-name {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333;
-  flex-shrink: 0;
-}
-.template-dates-compact {
   flex: 1;
-  font-size: 24rpx;
-  color: #666;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   min-width: 0;
 }
-.template-card-menu {
-  font-size: 32rpx;
-  color: #999;
-  padding: 8rpx 0 8rpx 16rpx;
-  flex-shrink: 0;
-}
 .template-dot {
-  width: 16rpx;
-  height: 16rpx;
+  width: 14rpx;
+  height: 14rpx;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 .template-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333;
+  color: #2F3A35;
+}
+.template-card-menu {
+  font-size: 28rpx;
+  color: #B0B8BC;
+  padding: 8rpx 0 8rpx 12rpx;
+  flex-shrink: 0;
+}
+.template-card-menu:active {
+  opacity: 0.7;
 }
 .template-dates-chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8rpx;
+  gap: 10rpx;
 }
 .date-chip {
-  font-size: 24rpx;
-  color: #07c160;
-  padding: 6rpx 16rpx;
-  background: #e8f8f0;
-  border-radius: 12rpx;
+  font-size: 22rpx;
+  color: #5F6B73;
+  padding: 8rpx 18rpx;
+  background: rgba(255,255,255,0.8);
+  border-radius: 20rpx;
 }
 .date-chip:active {
-  opacity: 0.8;
-}
-.meal-label.has-override {
-  color: #999;
+  opacity: 0.85;
 }
 .template-meals {
-  margin-bottom: 20rpx;
+  padding: 12rpx 28rpx 28rpx;
 }
-.template-card .meal-row {
+.meal-row {
   display: flex;
   align-items: flex-start;
-  padding: 10rpx 0;
-  font-size: 28rpx;
+  padding: 14rpx 0;
+  font-size: 26rpx;
+  gap: 12rpx;
 }
-.template-card .meal-label {
+.meal-tag {
   flex-shrink: 0;
-  color: #666;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  background: #F2F4F5;
+  color: #5F6B73;
+  font-size: 22rpx;
 }
-.template-card .meal-name {
+.meal-name {
   flex: 1;
-  color: #333;
+  color: #2F3A35;
   min-width: 0;
+  line-height: 1.5;
 }
-.template-card .meal-name-clamp {
+.meal-name-clamp {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.template-card.placeholder .template-meals .meal-name {
-  color: #999;
+.template-card.placeholder .meal-name {
+  color: #9CA3A8;
 }
 .placeholder-hint {
   display: block;
   text-align: center;
   font-size: 24rpx;
-  color: #999;
-  padding: 16rpx 0;
+  color: #9CA3A8;
+  padding: 20rpx 0;
 }
 
+/* ========== 底部确认按钮 ========== */
 .confirm-area {
-  margin-top: 48rpx;
-  padding: 0 0 32rpx;
+  margin-top: 40rpx;
+  padding: 0 0 40rpx;
 }
 .confirm-area .btn-confirm-week {
   width: 100%;
-  height: 88rpx;
-  line-height: 88rpx;
-  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  background: linear-gradient(135deg, #7FB77E 0%, #6BA86A 100%);
   color: #fff;
-  border-radius: 12rpx;
+  border-radius: 24rpx;
   font-size: 32rpx;
   border: none;
+}
+.confirm-area .btn-confirm-week::after {
+  border: none;
+}
+.confirm-area .btn-confirm-week:active {
+  opacity: 0.88;
 }
 .confirm-hint {
   display: block;
   text-align: center;
   font-size: 24rpx;
-  color: #999;
+  color: #9CA3A8;
   margin-top: 16rpx;
 }
 
-/* 备餐套数弹框 */
+/* ========== 弹框 ========== */
 .menu-count-modal-mask {
   position: fixed;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.4);
   z-index: 100;
 }
 .menu-count-modal-panel {
@@ -299,16 +320,21 @@
   right: 0;
   bottom: 0;
   background: #fff;
-  border-radius: 24rpx 24rpx 0 0;
+  border-radius: 32rpx 32rpx 0 0;
   padding: 32rpx 32rpx calc(32rpx + env(safe-area-inset-bottom));
   z-index: 101;
 }
 .menu-count-modal-title {
   font-size: 32rpx;
   font-weight: 600;
-  color: #333;
+  color: #2F3A35;
   margin-bottom: 32rpx;
   text-align: center;
+}
+.date-assign-modal-content {
+  font-size: 28rpx;
+  color: #7A8A7E;
+  margin-bottom: 32rpx;
 }
 .menu-count-options {
   display: flex;
@@ -321,37 +347,25 @@
   text-align: center;
   padding: 24rpx 0;
   font-size: 28rpx;
-  color: #333;
-  background: #f5f5f5;
-  border-radius: 12rpx;
+  color: #2F3A35;
+  background: #F2F4F5;
+  border-radius: 20rpx;
 }
 .menu-count-opt.selected {
-  background: #e8f8f0;
-  color: #07c160;
+  background: #EAF7EF;
+  color: #7FB77E;
   font-weight: 600;
-}
-.menu-count-checkbox-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-  margin-bottom: 32rpx;
-  padding: 16rpx 0;
-}
-.menu-count-checkbox-icon {
-  font-size: 36rpx;
-  color: #07c160;
-}
-.menu-count-checkbox-label {
-  font-size: 28rpx;
-  color: #333;
 }
 .menu-count-save-btn {
   width: 100%;
   height: 88rpx;
-  line-height: 88rpx;
-  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  background: linear-gradient(135deg, #7FB77E 0%, #6BA86A 100%);
   color: #fff;
-  border-radius: 12rpx;
+  border-radius: 24rpx;
   font-size: 32rpx;
   border: none;
 }
@@ -359,15 +373,16 @@
   border: none;
 }
 
+/* ========== 空态 ========== */
 .empty {
   padding: 48rpx 0;
   text-align: center;
 }
 .tip-text {
   font-size: 28rpx;
-  color: #666;
+  color: #7A8A7E;
 }
 .btn-primary {
   font-size: 28rpx;
-  color: #07c160;
+  color: #7FB77E;
 }

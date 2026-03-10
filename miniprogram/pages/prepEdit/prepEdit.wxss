@@ -1,0 +1,5 @@
+.container { padding: 32rpx; }
+.section { margin-bottom: 32rpx; }
+.label { font-size: 28rpx; color: #999; margin-bottom: 8rpx; }
+.value { font-size: 32rpx; }
+.tip { color: #999; font-size: 28rpx; }

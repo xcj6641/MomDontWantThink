@@ -22,6 +22,16 @@
     </navigator>
   </view>
 
+  <view class="dev-options">
+    <view class="menu-list">
+      <view class="menu-item menu-item-switch">
+        <text>周计划 Mock 模式（联调）</text>
+        <text class="tip-text">开启时「生成本周计划」用本地 Mock；关闭时走云端</text>
+        <switch checked="{{useMockWeekPlan}}" data-key="useMockWeekPlan" bindchange="onMockModeChange" />
+      </view>
+    </view>
+  </view>
+
   <view class="footer-tip tip-text">
     ✔️ 已帮你保存偏好，生成计划时会自动排除过敏食材哦
   </view>

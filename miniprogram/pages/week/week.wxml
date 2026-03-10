@@ -1,97 +1,120 @@
 <view class="container">
-  <!-- Header §3 -->
-  <view class="page-header">
-    <text class="header-title" wx:if="{{babyAgeMonths != null && babyAgeMonths < 5}}">宝宝未满5个月，当前不推荐生成辅食备餐计划</text>
-    <text class="header-title" wx:else>✔️ 已帮你准备好本周辅食计划</text>
-    <text class="header-subtitle" wx:if="{{babyAgeMonths != null && babyAgeMonths < 5}}">宝宝{{babyAgeMonths}}月龄，可以先了解备餐计划的使用方式</text>
-    <text class="header-subtitle" wx:elif="{{babyAgeMonths != null && babyAgeMonths >= 5}}">按宝宝 {{babyAgeMonths}} 月龄生成，可随时调整</text>
+  <!-- 顶部状态提示卡片：独立信息卡，左侧图标 -->
+  <view class="welcome-card">
+    <view class="welcome-card-icon">🌱</view>
+    <view class="welcome-card-body">
+      <text class="welcome-title" wx:if="{{babyAgeMonths != null && babyAgeMonths < 5}}">宝宝未满5个月，当前不推荐生成辅食备餐计划</text>
+      <text class="welcome-title" wx:elif="{{isNextWeek}}">下周辅食准备好啦</text>
+      <text class="welcome-title" wx:else>本周辅食准备好啦</text>
+      <text class="welcome-subtitle" wx:if="{{babyAgeMonths != null && babyAgeMonths < 5}}">宝宝{{babyAgeMonths}}月龄，可以先了解备餐计划的使用方式</text>
+      <text class="welcome-subtitle" wx:elif="{{babyAgeMonths != null && babyAgeMonths >= 5}}">根据宝宝{{babyAgeMonths}}月龄生成，可以随时调整</text>
+    </view>
   </view>
 
   <!-- 加载态 -->
   <view class="loading-block" wx:if="{{loading}}">
-    <text class="loading-text">正在帮你生成本周计划…</text>
+    <text class="loading-text">{{isNextWeek ? '正在帮你生成下周计划…' : '正在帮你生成本周计划…'}}</text>
     <view class="skeleton-list">
       <view class="skeleton-card" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
     </view>
   </view>
 
   <block wx:elif="{{templateCards.length > 0}}">
-    <!-- §4 本周备餐设置区：整行可点开弹框 -->
-    <view class="settings-inline">
-      <view class="settings-block-title">📦 本周备餐设置</view>
-      <view class="settings-row settings-row-adjust" bindtap="onOpenMenuCountModal">
-        <text class="settings-summary-text">本周备 {{settingsNVal}} 套菜单</text>
-        <text class="settings-row-arrow">调整 ›</text>
+    <!-- 日期分配区：无标题，仅 日期分配 + 备餐按钮 + 星期 -->
+    <view class="date-district-card">
+      <view class="date-district-head" bindtap="onOpenMenuCountModal">
+        <text class="date-district-title">日期分配 {{settingsDistributionText}}</text>
+        <text class="date-district-adjust">调整</text>
       </view>
-      <!-- §6 日期分配区 -->
-      <view class="date-assign-section">
-        <text class="date-assign-title">日期分配（{{settingsDistributionText}}）</text>
-        <text class="date-assign-subtitle">已为你安排好，可选择备餐调整日期</text>
-      </view>
-      <!-- §7 备餐选择按钮，多时横向滚动 -->
-      <scroll-view class="settings-tabs-scroll" scroll-x enhanced show-scrollbar="{{false}}">
-        <view class="settings-row settings-tabs">
-          <view
-            class="settings-tab {{settingsSelectedIndex === item + 1 ? 'active' : ''}}"
-            wx:for="{{settingsTabList}}"
-            wx:key="*this"
-            data-index="{{item}}"
-            bindtap="onSettingsTabTap"
-          >
-            <view class="settings-tab-dot" style="background-color: {{settingsTemplateColors[item]}};"></view>
-            <text>备餐{{item + 1}}</text>
-          </view>
-        </view>
-      </scroll-view>
-      <!-- §8 日期分配行 -->
-      <view class="settings-row settings-days-row">
+      <view class="prep-buttons">
         <view
-          class="settings-day-cell {{item.isUnassigned ? 'unassigned' : ''}} {{item.isCurrent ? 'current' : 'assigned'}}"
+          class="prep-btn {{settingsSelectedIndex === item + 1 ? 'active' : ''}}"
+          style="background: {{settingsSelectedIndex === item + 1 ? (settingsTemplateBgColors[item] || '#EAF7EF') : '#F2F4F5'}}; color: {{settingsSelectedIndex === item + 1 ? (settingsTemplateColors[item] || '#7FB77E') : '#5F6B73'}};"
+          wx:for="{{settingsTabList}}"
+          wx:key="*this"
+          data-index="{{item}}"
+          bindtap="onSettingsTabTap"
+        >
+          <view class="prep-btn-dot" style="background-color: {{settingsTemplateColors[item]}};"></view>
+          <text>备餐{{item + 1}}</text>
+        </view>
+      </view>
+      <view class="week-days-row">
+        <view
+          class="week-day-cell {{item.isUnassigned ? 'unassigned' : ''}} {{item.isCurrent ? 'current' : 'assigned'}}"
           style="{{item.bgStyle}}"
           wx:for="{{settingsDayCellList}}"
           wx:key="day"
           data-day="{{item.day}}"
           bindtap="onSettingsDayTap"
         >
-          <text class="settings-day-label">{{item.shortLabel}}</text>
+          <text class="week-day-label">{{item.shortLabel}}</text>
         </view>
       </view>
     </view>
 
-    <!-- §12 备餐卡片列表 -->
+    <!-- 分组标题：备餐安排 -->
+    <view class="section-title-wrap">
+      <text class="section-title-icon">🥣</text>
+      <text class="section-title-text">备餐安排</text>
+    </view>
+
+    <!-- 备餐卡片：卡片头 ● 备餐1 ...，卡片内 星期按钮 + 餐次列表 -->
     <view class="template-cards">
-      <view class="template-card {{item.isPlaceholder ? 'placeholder' : ''}}" wx:for="{{displayTemplateCards}}" wx:key="templateName">
-        <view class="template-card-header">
-          <view class="template-card-title-row">
-            <view class="template-dot" style="background: {{settingsTemplateColors[index]}}"></view>
-            <text class="template-name">{{item.templateName}}</text>
-            <text class="template-dates-compact">{{item.datesCompactLabel}}</text>
+      <view
+        class="template-card {{item.isPlaceholder ? 'placeholder' : ''}}"
+        wx:for="{{displayTemplateCards}}"
+        wx:key="templateName"
+        data-prep-id="{{item.templateId}}"
+        bindtap="onCardTap"
+      >
+        <view class="template-card-accent" style="background: {{settingsTemplateColors[index] || '#7FB77E'}};"></view>
+        <view class="template-card-header" style="background: {{settingsTemplateBgColors[index] || '#F2F4F5'}};">
+          <view class="template-header-inner">
+            <view class="template-header-left">
+              <view class="template-dot" style="background: {{settingsTemplateColors[index]}}"></view>
+              <text class="template-name">{{item.templateName}}</text>
+            </view>
             <view class="template-card-menu" catchtap="onCardMenuTap" data-index="{{index}}" data-template-id="{{item.templateId}}" data-is-placeholder="{{item.isPlaceholder}}">⋯</view>
           </view>
           <view class="template-dates-chips">
-            <text class="date-chip" wx:for="{{item.dateChips}}" wx:key="date" data-date="{{item.date}}" bindtap="onTapDate">{{item.weekdayLabel}}</text>
+            <text class="date-chip" wx:for="{{item.dateChips}}" wx:key="date" data-date="{{item.date}}" data-prep-id="{{item.templateId}}" bindtap="onTapDate">{{item.weekdayLabel}}</text>
           </view>
         </view>
         <view class="template-meals">
           <view class="meal-row" wx:for="{{item.meals}}" wx:for-item="meal" wx:key="mealKey">
-            <text class="meal-label {{meal.hasOverride ? 'has-override' : ''}}">{{meal.hasOverride ? '✎ ' : ''}}{{meal.mealLabelDisplay}}：</text>
-            <text class="meal-name meal-name-clamp">{{meal.recipeName || '未安排'}}{{meal.overrideSuffix ? ' | ' + meal.overrideSuffix : ''}}</text>
+            <text class="meal-tag">{{meal.hasOverride ? '✎ ' : ''}}[{{meal.mealLabelDisplay}}]</text>
+            <text
+              class="meal-name meal-name-clamp"
+              data-recipe-id="{{item.recipeId}}"
+              catchtap="onRecipeNameTap"
+            >{{meal.recipeName || '未安排'}}{{meal.overrideSuffix ? ' | ' + meal.overrideSuffix : ''}}</text>
           </view>
         </view>
         <text wx:if="{{item.isPlaceholder}}" class="placeholder-hint">保存后生成菜单</text>
       </view>
     </view>
 
+    <!-- 分配日期弹框（Mock 下点击日期区域打开，回显当前分配） -->
+    <view class="menu-count-modal-mask" wx:if="{{showAssignDateModal}}" catchtap="onCloseAssignDateModal"></view>
+    <view class="menu-count-modal-panel" wx:if="{{showAssignDateModal}}">
+      <view class="menu-count-modal-title">分配日期</view>
+      <view class="date-assign-modal-content">
+        <text>当前分配：{{assignDateLabels || '—'}}</text>
+      </view>
+      <button class="menu-count-save-btn" bindtap="onCloseAssignDateModal">关闭</button>
+    </view>
+
     <!-- §21 底部确认按钮 -->
     <view class="confirm-area" wx:if="{{needConfirm && !weekConfirmed}}">
-      <button class="btn-confirm-week" bindtap="onConfirmWeek">确认并开始本周计划</button>
+      <button class="btn-confirm-week" bindtap="onConfirmWeek">{{isNextWeek ? '确认并开始下周计划' : '确认并开始本周计划'}}</button>
       <text class="confirm-hint">确认后回到「今天安排」，之后也能随时调整</text>
     </view>
 
     <!-- 备餐套数弹框：内含 1-7 选择 + 保存 -->
     <view class="menu-count-modal-mask" wx:if="{{showMenuCountModal}}" catchtap="onCloseMenuCountModal"></view>
     <view class="menu-count-modal-panel" wx:if="{{showMenuCountModal}}">
-      <view class="menu-count-modal-title">本周准备几套备餐？</view>
+      <view class="menu-count-modal-title">{{isNextWeek ? '下周' : '本周'}}准备几套备餐？</view>
       <view class="menu-count-options">
         <view
           class="menu-count-opt {{settingsNVal === item ? 'selected' : ''}}"
@@ -105,9 +128,67 @@
     </view>
   </block>
 
-  <!-- 无计划空态 -->
+  <!-- 无计划空态：同一套日期分配区 + 生成按钮 -->
+  <block wx:elif="{{!loading && templateCards.length === 0}}">
+    <view class="date-district-card">
+      <view class="date-district-head" bindtap="onOpenMenuCountModal">
+        <text class="date-district-title">日期分配 {{settingsDistributionText || '3-2-2'}}</text>
+        <text class="date-district-adjust">调整</text>
+      </view>
+      <view class="prep-buttons">
+        <view
+          class="prep-btn {{settingsSelectedIndex === item + 1 ? 'active' : ''}}"
+          style="background: {{settingsSelectedIndex === item + 1 ? (settingsTemplateBgColors[item] || '#EAF7EF') : '#F2F4F5'}}; color: {{settingsSelectedIndex === item + 1 ? (settingsTemplateColors[item] || '#7FB77E') : '#5F6B73'}};"
+          wx:for="{{settingsTabList}}"
+          wx:key="*this"
+          data-index="{{item}}"
+          bindtap="onSettingsTabTap"
+        >
+          <view class="prep-btn-dot" style="background-color: {{settingsTemplateColors[item]}};"></view>
+          <text>备餐{{item + 1}}</text>
+        </view>
+      </view>
+      <view class="week-days-row">
+        <view
+          class="week-day-cell {{item.isUnassigned ? 'unassigned' : ''}} {{item.isCurrent ? 'current' : 'assigned'}}"
+          style="{{item.bgStyle}}"
+          wx:for="{{settingsDayCellList}}"
+          wx:key="day"
+          data-day="{{item.day}}"
+          bindtap="onSettingsDayTap"
+        >
+          <text class="week-day-label">{{item.shortLabel}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="section-title-wrap">
+      <text class="section-title-icon">🥣</text>
+      <text class="section-title-text">备餐安排</text>
+    </view>
+    <view class="empty">
+      <text class="tip-text" style="display:block;margin-bottom:24rpx;">选择备餐数后，点击下方按钮{{isNextWeek ? '生成下周计划' : '生成本周计划'}}</text>
+      <button class="btn-primary" bindtap="onGenerateMockPlan">{{isNextWeek ? '生成下周计划' : '生成本周计划'}}</button>
+      <text class="tip-text" style="margin-top:16rpx;display:block;">将按当前备餐数生成{{isNextWeek ? '下周' : '本周'}}计划，可随时调整</text>
+    </view>
+    <view class="menu-count-modal-mask" wx:if="{{showMenuCountModal}}" catchtap="onCloseMenuCountModal"></view>
+    <view class="menu-count-modal-panel" wx:if="{{showMenuCountModal}}">
+      <view class="menu-count-modal-title">{{isNextWeek ? '下周' : '本周'}}准备几套备餐？</view>
+      <view class="menu-count-options">
+        <view
+          class="menu-count-opt {{settingsNVal === item ? 'selected' : ''}}"
+          wx:for="{{[1,2,3,4,5,6,7]}}"
+          wx:key="*this"
+          data-n="{{item}}"
+          bindtap="onSelectMenuCountInModal"
+        >{{item}} 套</view>
+      </view>
+      <button class="menu-count-save-btn" bindtap="onSaveSettingsInModal" loading="{{settingsSaving}}">保存</button>
+    </view>
+  </block>
+
+  <!-- 无计划且非空态：仅提示去生成 -->
   <view class="empty" wx:else>
-    <text class="tip-text">暂无本周计划</text>
-    <navigator url="/pages/nextWeek/nextWeek" class="btn-primary" style="margin-top:24rpx;display:block;text-align:center;">去生成</navigator>
+    <text class="tip-text">暂无{{isNextWeek ? '下周' : '本周'}}计划</text>
+    <navigator url="{{isNextWeek ? '/pages/week/week?weekStartDate=' + weekStartDate + '&needConfirm=1' : '/pages/nextWeek/nextWeek'}}" class="btn-primary" style="margin-top:24rpx;display:block;text-align:center;">去生成</navigator>
   </view>
 </view>
