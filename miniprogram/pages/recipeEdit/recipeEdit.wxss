@@ -7,7 +7,7 @@
 .label {
   display: block;
   font-size: 28rpx;
-  color: #666;
+  color: #6e7b70;
   margin-bottom: 12rpx;
 }
 
@@ -46,7 +46,7 @@
 
 .add-ingredient {
   padding: 20rpx 0;
-  color: #07c160;
+  color: #7fb77e;
   font-size: 28rpx;
 }
 
@@ -66,7 +66,7 @@
   height: 88rpx;
   line-height: 88rpx;
   text-align: center;
-  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  background: linear-gradient(135deg, #7fb77e 0%, #6ba86a 100%);
   color: #fff;
   border-radius: 12rpx;
   font-size: 32rpx;

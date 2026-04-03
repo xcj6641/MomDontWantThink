@@ -25,8 +25,14 @@ Page({
   onLoad(opt: { weekStartDate?: string; date?: string }) {
     const date = opt?.date || ''
     const weekStartDate = opt?.weekStartDate ? (opt.weekStartDate.slice(0, 10)) : (date ? getMonday(date) : '')
-    this.setData({ date, weekStartDate })
-    if (date && weekStartDate) this.loadDay()
+    if (!date || !weekStartDate) {
+      wx.showToast({ title: '缺少日期信息', icon: 'none' })
+      return
+    }
+    // 单日编辑：复用 templateEdit 的卡片样式与操作
+    wx.redirectTo({
+      url: `/pages/templateEdit/templateEdit?mode=day&dayId=${date}&weekStartDate=${weekStartDate}`,
+    })
   },
 
   async loadDay() {

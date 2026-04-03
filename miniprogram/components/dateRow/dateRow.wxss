@@ -24,8 +24,8 @@
 }
 
 .date-row.current {
-  background: #07c160;
-  border: 2rpx solid #06ad56;
+  background: #7fb77e;
+  border: 2rpx solid #6ba86a;
 }
 
 .date-row.current .date-text,
@@ -44,11 +44,11 @@
 .weekday-text {
   width: 80rpx;
   font-size: 24rpx;
-  color: #666;
+  color: #6e7b70;
 }
 
 .template-name {
   flex: 1;
   font-size: 26rpx;
-  color: #666;
+  color: #6e7b70;
 }

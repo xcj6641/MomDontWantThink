@@ -8,5 +8,5 @@
 }
 .redirect-text {
   font-size: 28rpx;
-  color: #999;
+  color: #8a978e;
 }

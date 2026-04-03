@@ -1,7 +1,16 @@
-.container { }
+/* 与首页初始页 welcome-card 同色底，白卡片浮在浅绿上 */
+.container {
+  min-height: 100vh;
+  box-sizing: border-box;
+  background: #eaf7ef;
+  padding: 24rpx 24rpx 200rpx;
+}
 
 .tip {
   padding: 20rpx 0;
+  font-size: 26rpx;
+  color: #6e7b70;
+  line-height: 1.45;
 }
 
 .block {
@@ -28,7 +37,7 @@
 .block-hint {
   display: block;
   font-size: 24rpx;
-  color: #999;
+  color: #8a978e;
   margin-top: 8rpx;
 }
 
@@ -58,7 +67,7 @@
   height: 88rpx;
   line-height: 88rpx;
   text-align: center;
-  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  background: linear-gradient(135deg, #7fb77e 0%, #6ba86a 100%);
   color: #fff;
   border-radius: 12rpx;
   font-size: 32rpx;

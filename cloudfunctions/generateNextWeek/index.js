@@ -9,7 +9,7 @@ const db = cloud.database();
 
 /** 月龄餐数规则：instruction/月龄餐数规则.md；slot: breakfast, lunch, dinner, snack_am, snack_pm */
 const SLOT_ORDER = ['breakfast', 'snack_am', 'lunch', 'snack_pm', 'dinner'];
-const SLOT_LABELS = { breakfast: '早餐', snack_am: '上午加餐', lunch: '午餐', snack_pm: '下午加餐', dinner: '晚餐' };
+const SLOT_LABELS = { breakfast: '早餐', snack_am: '加餐', lunch: '午餐', snack_pm: '下午加餐', dinner: '晚餐' };
 const AGE_BANDS = [
   { min: 0, max: 5, key: '0-5', slots: [] },
   { min: 5, max: 6, key: '5-6', slots: ['lunch'] },

@@ -51,7 +51,7 @@
   flex: 1;
   margin-left: 16rpx;
   font-size: 24rpx;
-  color: #999;
+  color: #8a978e;
 }
 
 .menu-item-switch {

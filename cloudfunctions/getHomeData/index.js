@@ -57,8 +57,9 @@ exports.main = async (event, context) => {
       if (day && day.meals) todayMeals = day.meals;
     }
 
-    const MEAL_LABEL = { breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snack_am: '上午加餐', snack_pm: '下午加餐', snack1: '上午加餐', snack2: '下午加餐' };
-    let tomorrowTip = '去生成下周计划吧～';
+    const MEAL_LABEL = { breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snack_am: '加餐', snack_pm: '下午加餐', snack1: '加餐', snack2: '下午加餐' };
+    // 明日备菜仅描述「明天要备什么」，与「下周计划」模块解耦；无数据时由前端展示「没有明日备菜工作」
+    let tomorrowTip = '';
     const tomorrow = addDays(today, 1);
     if (thisPlan && thisPlan.days) {
       const tomorrowDay = thisPlan.days.find((d) => d.date === tomorrow);
@@ -70,11 +71,14 @@ exports.main = async (event, context) => {
     }
 
     const nextWeekStatus = nextPlan && nextPlan.days && nextPlan.days.length >= 7 ? 'generated' : 'none';
+    const thisWeekStatus =
+      thisPlan && thisPlan.days && Array.isArray(thisPlan.days) && thisPlan.days.length >= 7 ? 'generated' : 'none';
 
     return res(null, {
       today,
       todayMeals,
       tomorrowTip,
+      thisWeekStatus,
       nextWeekStatus,
       nextWeekStartDate: nextMonday,
       showInitial: !!showInitial,

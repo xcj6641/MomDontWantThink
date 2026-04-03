@@ -2,7 +2,7 @@
 const { callCloud } = require('../../utils/cloud.js')
 
 const WEEKDAYS = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-const TEMPLATE_COLORS = ['#07c160', '#1989fa', '#ff976a', '#9c27b0', '#00bcd4', '#ffeb3b', '#795548']
+const TEMPLATE_COLORS = ['#7FB77E', '#1989fa', '#F4B860', '#9c27b0', '#00bcd4', '#A0D8C0', '#795548']
 
 Page({
   data: {

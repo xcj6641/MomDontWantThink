@@ -13,7 +13,7 @@
 
 .tip-text {
   font-size: 26rpx;
-  color: #999;
+  color: #8a978e;
 }
 
 .meals-list {
@@ -42,7 +42,7 @@
 .meal-label {
   display: block;
   font-size: 26rpx;
-  color: #666;
+  color: #6e7b70;
   margin-bottom: 6rpx;
 }
 .meal-name {
@@ -54,7 +54,7 @@
   flex-shrink: 0;
   margin-left: 24rpx;
   font-size: 26rpx;
-  color: #07c160;
+  color: #7fb77e;
 }
 
 .footer-tip {
@@ -69,7 +69,7 @@
   height: 88rpx;
   line-height: 88rpx;
   text-align: center;
-  background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+  background: linear-gradient(135deg, #7fb77e 0%, #6ba86a 100%);
   color: #fff;
   border-radius: 12rpx;
   font-size: 32rpx;

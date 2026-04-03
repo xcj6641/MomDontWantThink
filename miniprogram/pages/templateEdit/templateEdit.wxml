@@ -1,22 +1,97 @@
 <view class="container">
-  <view class="tip tip-text">✔️ 编辑后会影响所有绑定该模板的日期哦</view>
-
-  <view class="field">
-    <text class="label">模板名称</text>
-    <input class="input" value="{{name}}" placeholder="例如：默认一周" bindinput="onNameInput" />
+  <view class="day-info-wrap" wx:if="{{mode === 'day'}}">
+    <view class="meal-card day-info-card">
+      <text class="meal-card-title">📅 周{{dayWeekdayShort || ''}}备餐</text>
+      <view class="page-tip day-tip">只会调整这一天，不影响其他日期</view>
+    </view>
   </view>
-
-  <view class="meals-section">
-    <text class="section-title">5 餐 + BLW 开关</text>
-    <view class="meal-block" wx:for="{{meals}}" wx:key="mealKey">
-      <text class="meal-label">{{item.label}}</text>
-      <switch checked="{{item.defaultBlw}}" data-index="{{index}}" bindchange="onBlwChange" />
+  <view class="meal-cards">
+    <view class="meal-card" wx:for="{{meals}}" wx:key="mealKey">
+      <view class="meal-card-head">
+        <text class="meal-card-title">{{item.label}}</text>
+        <text class="meal-card-action" data-index="{{index}}" catchtap="onReplaceSet">换一套</text>
+      </view>
+      <view class="meal-card-list">
+        <view class="recipe-row" wx:for="{{item.recipes}}" wx:for-item="recipe" wx:for-index="recipeIdx" wx:key="recipeId">
+          <view class="recipe-main">
+            <text class="recipe-name" data-recipe-id="{{recipe.recipeId}}" catchtap="onRecipeNameTap">{{recipe.recipeName || '未命名'}}</text>
+            <view class="recipe-tags">
+              <text class="recipe-tag" wx:if="{{recipe.isLike}}">❤️</text>
+              <text class="recipe-tag" wx:if="{{recipe.isFavorite}}">⭐</text>
+              <text class="recipe-tag" wx:if="{{recipe.isCustom}}">👩‍🍳</text>
+              <text class="recipe-tag blw" wx:if="{{recipe.isBlw}}">BLW</text>
+            </view>
+          </view>
+          <view class="recipe-delete" data-meal-index="{{index}}" data-recipe-index="{{recipeIdx}}" catchtap="onRemoveRecipe">
+            <text class="delete-icon">删除</text>
+          </view>
+        </view>
+      </view>
+      <view class="add-recipe-btn" data-index="{{index}}" bindtap="onAddRecipe">+ 添加菜品</view>
     </view>
   </view>
 
-  <view class="footer-tip tip-text">👉 每餐菜谱池在「我的菜谱」中维护，生成计划时自动从池中挑选</view>
+  <view class="footer-placeholder"></view>
+  <view class="footer-bar">
+    <button class="btn-outline" bindtap="onRestoreDefault">恢复推荐</button>
+    <button class="btn-primary" bindtap="onSave">保存修改</button>
+  </view>
 </view>
 
-<view class="footer-fixed">
-  <button class="btn-primary" bindtap="onSave">保存模板</button>
+<!-- 菜品选择器：底部抽屉 -->
+<view class="drawer-mask" wx:if="{{pickerVisible}}" catchtap="onClosePicker"></view>
+<view class="drawer-panel {{pickerVisible ? 'visible' : ''}}">
+  <view class="drawer-search-wrap">
+    <input
+      class="drawer-search"
+      placeholder="搜索菜名或食材"
+      value="{{pickerKeyword}}"
+      bindinput="onPickerSearch"
+    />
+  </view>
+  <view class="drawer-main-recommend" wx:if="{{mainRecommendedRecipe && pickerTab !== 'conditioning'}}">
+    <view class="drawer-main-recommend-left">
+      <text class="drawer-main-recommend-title">🍽️ 推荐：{{mainRecommendedRecipe.name}}</text>
+      <text class="drawer-main-recommend-sub">富含铁，适合今天午餐</text>
+    </view>
+    <text class="drawer-main-recommend-add" bindtap="onAddMainRecommended">添加</text>
+  </view>
+  <view class="drawer-tabs">
+    <text
+      class="drawer-tab {{pickerTab === item.key ? 'active' : ''}}"
+      wx:for="{{pickerTabs}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onPickerTab"
+    >{{item.label}}</text>
+  </view>
+  <view class="drawer-conditioning-cats" wx:if="{{pickerTab === 'conditioning' && !selectedConditioningKey}}">
+    <view
+      class="drawer-conditioning-cat"
+      wx:for="{{conditioningCategories}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onSelectConditioningCategory"
+    >{{item.label}}</view>
+  </view>
+  <view class="drawer-conditioning-head" wx:if="{{pickerTab === 'conditioning' && selectedConditioningKey}}">
+    <text class="drawer-conditioning-back" bindtap="onResetConditioningCategory">← 返回分类</text>
+  </view>
+  <scroll-view class="drawer-list" scroll-y wx:if="{{!(pickerTab === 'conditioning' && !selectedConditioningKey)}}">
+    <view
+      class="drawer-item"
+      wx:for="{{filteredCandidates}}"
+      wx:key="id"
+    >
+      <view class="drawer-item-main">
+        <text class="drawer-item-name" data-recipe="{{item}}" bindtap="onOpenRecipeDetail">{{item.name}}</text>
+        <view class="drawer-item-tags">
+          <text class="drawer-item-tag" wx:if="{{item.isLike}}">❤️</text>
+          <text class="drawer-item-tag" wx:if="{{item.isFavorite}}">⭐</text>
+        </view>
+      </view>
+      <text class="drawer-item-add" data-recipe="{{item}}" bindtap="onQuickAddRecipe">+</text>
+    </view>
+    <view class="drawer-empty" wx:if="{{filteredCandidates.length === 0}}">暂无菜谱</view>
+  </scroll-view>
 </view>

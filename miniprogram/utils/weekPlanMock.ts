@@ -52,6 +52,8 @@ export interface MockWeekPlanItem {
   assignedDates: string[]
   assignedDateText: string
   status: string
+  /** 备餐1 专用：每餐若干菜谱 id，顺序与 SLOT_ORDER 一致 */
+  recipesPerMeal?: number[][]
 }
 
 export interface MockWeekPlanResult {
@@ -74,6 +76,15 @@ export function generateMockWeekPlan(
   const prepCount = Math.min(7, Math.max(1, Math.floor(selectedPrepCount) || 3))
   const groups = getMockDateGroups(prepCount, weekDates)
 
+  /** 备餐1：调试菜数 — 早餐 2、加餐 1、午餐 1、下午加餐 1、晚餐 1（各餐比原模板少 1 道菜） */
+  const prep1RecipesPerMeal: number[][] = [
+    [1, 2], // 早餐
+    [2], // 加餐（snack_am）
+    [4], // 午餐
+    [5], // 下午加餐
+    [6], // 晚餐
+  ]
+
   const weekPlan = {
     weekStart: weekDates[0],
     prepCount,
@@ -86,6 +97,8 @@ export function generateMockWeekPlan(
         assignedDates: dates,
         assignedDateText: formatAssignedDateText(dates),
         status: 'planned',
+        /** 每套备餐都带同一套「每餐多菜」模板，避免当天落在 prep_2+ 时今日页只剩单菜 */
+        recipesPerMeal: prep1RecipesPerMeal,
       }
     }),
   }

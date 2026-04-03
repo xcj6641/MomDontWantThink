@@ -51,7 +51,7 @@
 
 .meal-k {
   width: 100rpx;
-  color: #666;
+  color: #6e7b70;
 }
 
 .meal-name {
@@ -61,7 +61,7 @@
 
 .reaction {
   font-size: 24rpx;
-  color: #07c160;
+  color: #7fb77e;
   margin-left: 12rpx;
 }
 

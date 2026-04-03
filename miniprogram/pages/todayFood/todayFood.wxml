@@ -1,0 +1,185 @@
+<view class="container {{showDebugInitialPage ? 'container-onboarding' : ''}}">
+  <view class="debug-fab" bindtap="onToggleDebugPanel">调试视图</view>
+  <view class="debug-panel" wx:if="{{debugPanelVisible}}">
+    <text class="debug-panel-title">辅食页调试模式</text>
+    <view class="debug-mode-item {{debugViewMode === 'auto' ? 'active' : ''}}" data-mode="auto" bindtap="onSelectDebugMode">自动（跟接口）</view>
+    <view class="debug-mode-item {{debugViewMode === 'initial' ? 'active' : ''}}" data-mode="initial" bindtap="onSelectDebugMode">强制初始信息页</view>
+    <view class="debug-mode-item {{debugViewMode === 'today' ? 'active' : ''}}" data-mode="today" bindtap="onSelectDebugMode">强制今日辅食页</view>
+  </view>
+
+  <!-- 与 pages/home 一致的初始信息页：欢迎卡 + 生日 + 过敏 + 生成本周辅食计划 -->
+  <block wx:if="{{showDebugInitialPage}}">
+    <view class="onboarding">
+      <view class="welcome-card">
+        <view class="welcome-card-icon">🌱</view>
+        <view class="welcome-card-body">
+          <text class="welcome-card-title">我来帮你安排宝宝辅食</text>
+          <text class="welcome-card-subtitle">先填写宝宝生日，我就能按月龄生成适合的本周辅食计划</text>
+        </view>
+      </view>
+
+      <view class="form-card birthday-card">
+        <view class="form-card-head">
+          <text class="form-card-title">宝宝生日</text>
+          <text class="form-card-required">必填</text>
+        </view>
+        <picker mode="date" value="{{babyBirthday}}" start="2020-01-01" end="2030-12-31" bindchange="onBirthdayChange">
+          <view class="picker-trigger">
+            <text class="picker-text {{babyBirthday ? '' : 'placeholder'}}">{{babyBirthday || '请选择日期'}}</text>
+            <text class="picker-arrow">›</text>
+          </view>
+        </picker>
+        <text class="form-card-hint">我会根据生日自动计算月龄</text>
+      </view>
+
+      <view class="form-card allergens-card">
+        <view class="form-card-head">
+          <text class="form-card-title">过敏食材</text>
+          <text class="form-card-optional">可选</text>
+        </view>
+        <view class="allergen-chips" wx:if="{{allergens.length > 0}}">
+          <view class="allergen-chip" wx:for="{{allergens}}" wx:key="*this">
+            <text class="allergen-chip-text">{{item}}</text>
+            <text class="allergen-chip-remove" data-index="{{index}}" catchtap="onRemoveAllergen">×</text>
+          </view>
+        </view>
+        <button class="btn-add-allergen" bindtap="onAddAllergen">+ 添加过敏食材</button>
+        <text class="form-card-hint">可先不填，之后也能随时补充</text>
+      </view>
+
+      <view class="bottom-placeholder"></view>
+      <view class="bottom-bar">
+        <button class="btn-primary-cta" disabled="{{!birthdayValid || onboardingGenerating}}" loading="{{onboardingGenerating}}" bindtap="onGenerateThisWeek">生成本周辅食计划</button>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{showMainPage}}">
+  <!-- 宝宝信息：分层 — 标题行 / 鼓励语 / 参考摄入+过敏 -->
+  <view class="baby-bar" wx:if="{{babyBirthday || allergenLine}}">
+    <text class="baby-bar-icon" wx:if="{{babyBirthday}}">👶</text>
+    <view class="baby-bar-top {{babyBirthday ? '' : 'baby-bar-top--full'}}">
+      <view class="baby-bar-head" wx:if="{{babyBirthday}}">
+        <text class="baby-bar-main">宝宝 · {{babyAgeSummary}}</text>
+        <text class="baby-bar-tagline">今天也要好好吃饭呀 🌱</text>
+        <view class="baby-bar-meta">
+          <text class="baby-bar-intake">参考摄入量：辅食250ml · 奶150ml</text>
+          <text class="baby-bar-allergen" wx:if="{{allergenLine}}">{{allergenLine}}</text>
+        </view>
+      </view>
+      <view class="baby-bar-head baby-bar-head--allergen-only" wx:elif="{{allergenLine}}">
+        <text class="baby-bar-allergen">{{allergenLine}}</text>
+      </view>
+      <view class="baby-bar-actions" wx:if="{{babyBirthday || allergenLine}}">
+        <text class="baby-bar-link" bindtap="onBabyBarThisWeek">{{thisWeekBtnText}}</text>
+        <text class="baby-bar-link" bindtap="onBabyBarNextWeek">{{nextWeekBtnText}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 引导：未完成首页设置 -->
+  <view class="setup-banner" wx:if="{{showSetupBanner}}" bindtap="onGoSetup">
+    <text class="setup-banner-text">先填写宝宝信息，即可生成本周计划</text>
+    <text class="setup-banner-arrow">去填写 ›</text>
+  </view>
+
+  <!-- 今日辅食标题 + 餐次列表：同一张卡片 -->
+  <view class="today-meals-card {{mealGroups.length === 0 && !loading ? 'today-meals-card--empty' : ''}}">
+    <view class="page-header page-header--in-card">
+      <view class="page-header-text">
+        <view class="page-title-row">
+          <text class="page-title-emoji">🥣</text>
+          <text class="page-title">今日辅食</text>
+        </view>
+        <text class="page-subtitle">周{{weekdayShort}} · 已安排 {{arrangedMealCount}} 餐</text>
+      </view>
+      <view class="btn-adjust-today" bindtap="onGoDayEdit">调整今日</view>
+    </view>
+
+    <!-- 加载骨架 -->
+    <view class="today-meals-skeleton" wx:if="{{loading}}">
+      <view class="skeleton-meal-row" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+    </view>
+
+    <block wx:elif="{{mealGroups.length > 0}}">
+      <view class="meal-slot" wx:for="{{mealGroups}}" wx:key="mealKey">
+        <view class="meal-slot-left">
+          <text class="meal-slot-title">{{item.mealLabel}}</text>
+          <text class="meal-blw-tag" wx:if="{{item.blw}}">BLW</text>
+        </view>
+        <view class="meal-slot-right">
+          <view
+            class="dish-row dish-row-compact"
+            wx:for="{{item.dishes}}"
+            wx:for-item="dish"
+            wx:key="dishKey"
+          >
+            <view
+              class="dish-cell-name"
+              bindlongpress="onDishNameLongPress"
+              data-dishkey="{{dish.dishKey}}"
+            >
+              <view class="dish-name-row">
+                <text
+                  class="dish-name dish-name-compact"
+                  bindtap="onDishDetail"
+                  data-recipeid="{{dish.recipeIdStr}}"
+                >{{dish.name}}</text>
+                <view
+                  wx:if="{{dish.babyLike}}"
+                  class="dish-tag dish-tag-like"
+                  catchtap="onToggleBabyLike"
+                  data-dishkey="{{dish.dishKey}}"
+                >宝宝喜欢</view>
+                <view
+                  wx:if="{{dish.favorite}}"
+                  class="dish-tag dish-tag-fav"
+                  catchtap="onToggleFavorite"
+                  data-dishkey="{{dish.dishKey}}"
+                >收藏</view>
+              </view>
+            </view>
+            <view
+              class="dish-check-done {{dish.done ? 'dish-check-done--on' : ''}}"
+              catchtap="onToggleDone"
+              data-dishkey="{{dish.dishKey}}"
+              data-mealkey="{{item.mealKey}}"
+              data-recipeid="{{dish.recipeIdStr}}"
+              data-recipename="{{dish.name}}"
+            >
+              <text class="dish-done-pill-mark" wx:if="{{dish.done}}">✓</text>
+              <text class="dish-done-pill-text">完成</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view class="today-meals-empty-body" wx:else>
+      <text class="empty-title">今天还没有安排辅食</text>
+      <view class="btn-outline-cta" bindtap="onGoWeekPlan">去本周计划看看</view>
+    </view>
+  </view>
+
+  <!-- 明日备菜 -->
+  <view class="tomorrow-card">
+    <text class="tomorrow-card-title">📝 明日备菜提醒</text>
+    <view class="tomorrow-lines" wx:if="{{tomorrowLines.length > 0}}">
+      <text class="tomorrow-line" wx:for="{{tomorrowLines}}" wx:key="*this">· {{item}}</text>
+    </view>
+    <text class="tomorrow-empty" wx:else>明天可以轻松一点，不用提前准备 😊</text>
+  </view>
+
+  <!-- 喂养小知识 -->
+  <view class="feeding-tip-card">
+    <text class="feeding-tip-title">📖 喂养小知识</text>
+    <view class="feeding-tip-body">
+      <text class="feeding-tip-line">· 新食材一次只加一种，连续观察 2～3 天再换样。</text>
+      <text class="feeding-tip-line">· 优先保证每日奶量，再按月龄逐步增加辅食。</text>
+      <text class="feeding-tip-line">· 进餐时保持愉快氛围，不强迫、不追喂。</text>
+    </view>
+  </view>
+
+  <view class="bottom-safe"></view>
+  </block>
+</view>

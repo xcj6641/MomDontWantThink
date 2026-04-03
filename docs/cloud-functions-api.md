@@ -616,3 +616,52 @@
 | listMyRecipes | recipes | - |
 
 文档结束。
+
+---
+
+## 13. 今日辅食页面契约（TodayFood）
+
+> 本章节用于前端页面 `pages/todayFood/todayFood` 的接口约束说明。优先复用既有云函数，减少新增接口成本。
+
+### 13.1 页面初始化与刷新
+
+**接口**：`getHomeData`  
+**入参**
+```json
+{
+  "today": "2025-03-03"
+}
+```
+**前端使用字段**
+- `todayMeals`：今日餐次列表（mealKey, recipeId, recipeName, blw）
+- `thisWeekStartDate`：跳转单日精细编辑时使用
+- `babyBirthday`：透传给周计划页（可选）
+
+**联动规则**
+- `onLoad` 首次调用；
+- `onShow` 返回页面后再次调用，保证与单日编辑页/周计划页数据一致。
+
+### 13.2 标记已做
+
+**接口**：`logMealDone`  
+**入参**
+```json
+{
+  "date": "2025-03-03",
+  "mealKey": "lunch",
+  "recipeId": "recipe_001",
+  "recipeName": "南瓜鸡肉粥"
+}
+```
+**行为**
+- 成功：toast `已记下这餐啦`
+- 失败：toast `记录失败，请稍后再试`
+
+### 13.3 进入单日精细编辑
+
+**页面跳转**：`/pages/templateEdit/templateEdit?mode=day&dayId={today}&weekStartDate={thisWeekStartDate}`  
+**保存接口（由单日编辑页调用）**：`updateDayPlan`
+
+**约束**
+- 只允许修改当天 `dayId`；
+- 保存后返回今日页，由 `onShow` 触发 `getHomeData` 刷新，不直接在今日页本地拼装餐次状态。

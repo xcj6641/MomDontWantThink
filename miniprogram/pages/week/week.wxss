@@ -1,21 +1,21 @@
 /* ========== 整体：页面背景 + 卡片层级 ========== */
 .container {
   min-height: 100vh;
-  background: #F7F8FA;
+  background: var(--bg-warm);
   padding: 24rpx 24rpx 48rpx;
   box-sizing: border-box;
 }
 
-/* ========== 顶部状态提示卡片：独立信息卡 ========== */
+/* ========== 顶部状态提示卡片：与页面背景明确区分 ========== */
 .welcome-card {
   display: flex;
   align-items: flex-start;
   gap: 20rpx;
-  background: #EAF7EF;
-  border: 2rpx solid #E3EFE7;
+  background: linear-gradient(165deg, #fbfdf9 0%, #eef6f1 100%);
+  border: 2rpx solid rgba(160, 216, 192, 0.4);
   border-radius: 32rpx;
   padding: 32rpx;
-  margin-bottom: 40rpx;
+  margin-bottom: 32rpx;
   box-sizing: border-box;
 }
 .welcome-card-icon {
@@ -37,7 +37,7 @@
 .welcome-subtitle {
   display: block;
   font-size: 26rpx;
-  color: #7A8A7E;
+  color: var(--text-secondary);
 }
 
 /* ========== 加载态 ========== */
@@ -47,7 +47,7 @@
 .loading-text {
   display: block;
   font-size: 28rpx;
-  color: #7A8A7E;
+  color: var(--text-secondary);
   margin-bottom: 24rpx;
 }
 .skeleton-list {
@@ -61,51 +61,77 @@
   border-radius: 32rpx;
 }
 
-/* ========== 日期分配区（无「本周备餐设置」标题） ========== */
+/* ========== 日期分配区：控制面板，与备餐卡片同一设计体系 ========== */
 .date-district-card {
   background: #FFFFFF;
   border-radius: 32rpx;
-  padding: 28rpx;
-  margin-bottom: 40rpx;
-  border: 2rpx solid #EEF1F4;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+  padding: 24rpx 28rpx;
+  margin-bottom: 32rpx;
+  border: 2rpx solid var(--border-warm);
+  box-shadow: 0 6rpx 18rpx rgba(127, 183, 126, 0.06);
 }
-.date-district-head {
+/* 第一行：标题与操作（左侧本周备x套备餐，右侧调整） */
+.date-district-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24rpx;
+  margin-bottom: 14rpx;
 }
-.date-district-head:active {
-  opacity: 0.85;
-}
-.date-district-title {
+.date-district-prep-title {
   font-size: 28rpx;
   font-weight: 600;
   color: #2F3A35;
 }
 .date-district-adjust {
   font-size: 26rpx;
-  color: #7A8A7E;
+  color: var(--text-secondary);
   padding: 8rpx 20rpx;
-  border-radius: 24rpx;
-  background: #F2F4F5;
+  border-radius: 20rpx;
+  background: #FFFFFF;
+  border: 2rpx solid var(--border-warm);
 }
+.date-district-adjust:active {
+  opacity: 0.85;
+}
+/* 第二行：分配摘要（日期分配 + 轻标签） */
+.date-district-summary-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
+}
+.date-district-label {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.date-district-tag {
+  font-size: 22rpx;
+  color: #6B7C73;
+  background: var(--fill-warm);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+/* 第三行：备餐1/2/3 按钮组 */
 .prep-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 16rpx;
-  margin-bottom: 24rpx;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
 }
 .prep-btn {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  padding: 14rpx 26rpx;
-  border-radius: 24rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 32rpx;
   font-size: 26rpx;
+  background: var(--fill-warm);
+  color: var(--text-secondary);
 }
 .prep-btn.active {
+  background: rgba(160, 216, 192, 0.22);
+  color: var(--green-deep);
   font-weight: 600;
 }
 .prep-btn:active {
@@ -117,28 +143,32 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
+/* 第四行：星期分配（更轻、更精致） */
 .week-days-row {
   display: flex;
   flex-wrap: nowrap;
-  gap: 12rpx;
+  gap: 10rpx;
 }
 .week-day-cell {
   flex: 1;
   min-width: 0;
-  padding: 18rpx 6rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  border-radius: 20rpx;
+  border-radius: 16rpx;
   border: none;
 }
 .week-day-cell.unassigned {
-  background: #F7F8FA;
-  color: #999;
+  background: var(--fill-warm);
+  color: var(--text-muted);
 }
 .week-day-cell:active {
   opacity: 0.9;
 }
 .week-day-label {
-  font-size: 22rpx;
+  font-size: 24rpx;
   display: block;
 }
 
@@ -147,7 +177,7 @@
   display: flex;
   align-items: center;
   gap: 8rpx;
-  margin-bottom: 24rpx;
+  margin-bottom: 20rpx;
 }
 .section-title-icon {
   font-size: 32rpx;
@@ -158,7 +188,7 @@
   color: #2F3A35;
 }
 
-/* ========== 备餐卡片：顶部彩色条 + 白底 + 边框 + 阴影 ========== */
+/* ========== 备餐卡片：统一白底 + 轻边框 + 轻阴影 + 16px 圆角 ========== */
 .template-cards {
   display: flex;
   flex-direction: column;
@@ -168,99 +198,115 @@
   background: #FFFFFF;
   border-radius: 32rpx;
   overflow: hidden;
-  border: 2rpx solid #EEF1F4;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.04);
+  border: 2rpx solid var(--border-warm);
+  box-shadow: 0 6rpx 20rpx rgba(127, 183, 126, 0.07);
 }
 .template-card-accent {
   height: 8rpx;
   width: 100%;
   flex-shrink: 0;
 }
+/* 头部：圆点 + 备餐名 + 三点菜单 */
 .template-card-header {
-  padding: 24rpx 28rpx 20rpx;
+  padding: 16rpx 28rpx 14rpx;
 }
 .template-header-inner {
   display: flex;
   align-items: center;
-  gap: 12rpx;
-  margin-bottom: 16rpx;
-}
-.template-header-left {
-  display: flex;
-  align-items: center;
   gap: 10rpx;
-  flex-shrink: 0;
-  flex: 1;
-  min-width: 0;
 }
 .template-dot {
-  width: 14rpx;
-  height: 14rpx;
+  width: 12rpx;
+  height: 12rpx;
   border-radius: 50%;
   flex-shrink: 0;
 }
 .template-name {
-  font-size: 30rpx;
+  flex: 1;
+  font-size: 32rpx;
   font-weight: 600;
   color: #2F3A35;
+  min-width: 0;
 }
 .template-card-menu {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #B0B8BC;
-  padding: 8rpx 0 8rpx 12rpx;
+  padding: 6rpx 0 6rpx 8rpx;
   flex-shrink: 0;
 }
 .template-card-menu:active {
   opacity: 0.7;
 }
+/* 头部星期：白底轻按钮，与浅绿 header 区分；选中为品牌绿 */
 .template-dates-chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10rpx;
+  gap: 16rpx;
+  margin-top: 12rpx;
 }
 .date-chip {
-  font-size: 22rpx;
-  color: #5F6B73;
-  padding: 8rpx 18rpx;
-  background: rgba(255,255,255,0.8);
+  font-size: 24rpx;
+  color: #5F6F67;
+  padding: 8rpx 20rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #E6ECE9;
   border-radius: 20rpx;
 }
 .date-chip:active {
-  opacity: 0.85;
+  background: #7FB77E;
+  color: #FFFFFF;
+  border-color: #7FB77E;
 }
-.template-meals {
-  padding: 12rpx 28rpx 28rpx;
+/* 日期区与菜单区之间淡分隔线 */
+.template-card-divider {
+  height: 0;
+  border-top: 2rpx solid #EEF2F0;
+  margin: 0 28rpx;
+}
+/* 菜单区：餐次列固定宽度，菜名左边界统一对齐 */
+.template-card-meals {
+  padding: 20rpx 28rpx 28rpx;
 }
 .meal-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   padding: 14rpx 0;
-  font-size: 26rpx;
-  gap: 12rpx;
+  gap: 16rpx;
 }
-.meal-tag {
+.meal-slot-cell {
   flex-shrink: 0;
-  padding: 4rpx 12rpx;
-  border-radius: 12rpx;
-  background: #F2F4F5;
-  color: #5F6B73;
-  font-size: 22rpx;
+  width: 144rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-wrap: wrap;
 }
-.meal-name {
-  flex: 1;
-  color: #2F3A35;
-  min-width: 0;
+.meal-slot {
+  font-size: 24rpx;
+  color: #7B8794;
   line-height: 1.5;
 }
-.meal-name-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.meal-blw-tag {
+  font-size: 22rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 12rpx;
+  line-height: 1.4;
+  /* 色值由内联 style 随当前备餐卡片色系注入 */
 }
-.template-card.placeholder .meal-name {
+.meal-recipe {
+  flex: 1;
+  min-width: 0;
+  font-size: 28rpx;
+  color: #3C4A45;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.meal-name-clamp {
+  display: block;
+  overflow: visible;
+}
+.template-card.placeholder .meal-recipe {
   color: #9CA3A8;
 }
 .placeholder-hint {
@@ -333,7 +379,7 @@
 }
 .date-assign-modal-content {
   font-size: 28rpx;
-  color: #7A8A7E;
+  color: var(--text-secondary);
   margin-bottom: 32rpx;
 }
 .menu-count-options {
@@ -348,7 +394,7 @@
   padding: 24rpx 0;
   font-size: 28rpx;
   color: #2F3A35;
-  background: #F2F4F5;
+  background: var(--fill-warm);
   border-radius: 20rpx;
 }
 .menu-count-opt.selected {
@@ -380,9 +426,32 @@
 }
 .tip-text {
   font-size: 28rpx;
-  color: #7A8A7E;
+  color: var(--text-secondary);
 }
+/* 与 todayFood / home 初始页「生成本周辅食计划」主按钮一致，避免仅改字色导致绿字叠绿底看不见 */
 .btn-primary {
-  font-size: 28rpx;
-  color: #7FB77E;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24rpx;
+  line-height: 1.3;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+  color: #fff;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+  text-decoration: none;
+}
+.btn-primary::after {
+  border: none;
+}
+.btn-primary:active {
+  opacity: 0.88;
+}
+.empty .btn-primary--mt {
+  margin-top: 24rpx;
 }

@@ -1,0 +1,674 @@
+/* 主内容区：暖白底 var(--bg-warm)、左右 24rpx */
+.container {
+  min-height: 100vh;
+  background: var(--bg-warm);
+  padding: 24rpx 24rpx 48rpx;
+  box-sizing: border-box;
+}
+
+.container.container-onboarding {
+  padding: 24rpx 24rpx 180rpx;
+}
+
+.debug-fab {
+  position: fixed;
+  right: 24rpx;
+  bottom: 220rpx;
+  z-index: 120;
+  background: #666;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 999rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.debug-panel {
+  position: fixed;
+  right: 24rpx;
+  bottom: 290rpx;
+  width: 360rpx;
+  background: #fff;
+  border: 2rpx solid var(--border-warm);
+  border-radius: 32rpx;
+  z-index: 120;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.debug-panel-title {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 16rpx;
+}
+
+.debug-mode-item {
+  font-size: 28rpx;
+  color: #333;
+  padding: 16rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.debug-mode-item.active {
+  background: rgba(160, 216, 192, 0.22);
+  color: var(--green-deep);
+}
+
+/* ========== 初始信息页 onboarding（与 pages/home 对齐，风格单独保留） ========== */
+.onboarding {
+  padding-bottom: 0;
+}
+.onboarding .welcome-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 20rpx;
+  background: linear-gradient(165deg, #fbfdf9 0%, #eef6f1 100%);
+  border: 2rpx solid rgba(160, 216, 192, 0.4);
+  border-radius: 32rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+  box-sizing: border-box;
+}
+.onboarding .welcome-card-icon {
+  font-size: 44rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.onboarding .welcome-card-body {
+  flex: 1;
+  min-width: 0;
+}
+.onboarding .welcome-card-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: 8rpx;
+}
+.onboarding .welcome-card-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.onboarding .form-card {
+  background: #ffffff;
+  border-radius: 32rpx;
+  padding: 28rpx 28rpx;
+  margin-bottom: 32rpx;
+  border: 2rpx solid var(--border-warm);
+  box-shadow: 0 6rpx 18rpx rgba(127, 183, 126, 0.06);
+  box-sizing: border-box;
+}
+.onboarding .form-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+.onboarding .form-card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2f3a35;
+}
+.onboarding .form-card-required {
+  font-size: 20rpx;
+  color: var(--text-muted);
+  background: var(--fill-warm);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+.onboarding .form-card-optional {
+  font-size: 20rpx;
+  color: var(--text-muted);
+  background: var(--fill-warm);
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+.onboarding .form-card-hint {
+  display: block;
+  font-size: 24rpx;
+  color: var(--text-secondary);
+  margin-top: 14rpx;
+}
+.onboarding .picker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 24rpx;
+  background: var(--fill-warm);
+  border-radius: 20rpx;
+  border: 2rpx solid rgba(160, 216, 192, 0.28);
+}
+.onboarding .picker-trigger:active {
+  opacity: 0.9;
+}
+.onboarding .picker-text {
+  font-size: 28rpx;
+  color: #2f3a35;
+}
+.onboarding .picker-text.placeholder {
+  color: var(--text-muted);
+}
+.onboarding .picker-arrow {
+  font-size: 32rpx;
+  color: #9daa9f;
+  line-height: 1;
+}
+.onboarding .allergen-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+.onboarding .allergen-chip {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(160, 216, 192, 0.22);
+  color: var(--green-deep);
+  padding: 12rpx 16rpx 12rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+}
+.onboarding .allergen-chip-text {
+  margin-right: 8rpx;
+}
+.onboarding .allergen-chip-remove {
+  font-size: 28rpx;
+  line-height: 1;
+  color: var(--green-deep);
+  opacity: 0.75;
+  padding: 0 4rpx;
+}
+.onboarding .allergen-chip-remove:active {
+  opacity: 1;
+}
+.onboarding .btn-add-allergen {
+  font-size: 28rpx;
+  color: var(--green-deep);
+  background: rgba(160, 216, 192, 0.22);
+  border: none;
+  border-radius: 24rpx;
+  padding: 20rpx 28rpx;
+  line-height: 1.4;
+}
+.onboarding .btn-add-allergen::after {
+  border: none;
+}
+.onboarding .btn-add-allergen:active {
+  opacity: 0.9;
+}
+.onboarding .bottom-placeholder {
+  height: 1rpx;
+}
+.onboarding .bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 24rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #ffffff;
+  box-shadow: 0 -2rpx 16rpx rgba(127, 183, 126, 0.09);
+  z-index: 10;
+}
+.onboarding .btn-primary-cta {
+  width: 100%;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%);
+  color: #fff;
+  border-radius: 24rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  border: none;
+}
+.onboarding .btn-primary-cta::after {
+  border: none;
+}
+.onboarding .btn-primary-cta:active {
+  opacity: 0.88;
+}
+.onboarding .btn-primary-cta[disabled] {
+  background: #dce5e0;
+  color: var(--text-muted);
+}
+
+/* 宝宝信息卡：极轻绿渐变 + 细边，略抬层次 */
+.baby-bar {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 20rpx;
+  row-gap: 12rpx;
+  align-items: start;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: linear-gradient(168deg, #fbfdf9 0%, #eef6f1 40%, #dff5ea 100%);
+  border: 2rpx solid rgba(160, 216, 192, 0.38);
+  border-radius: 32rpx;
+  padding: 32rpx;
+  box-sizing: border-box;
+  margin-bottom: 32rpx;
+  box-shadow: 0 6rpx 20rpx rgba(47, 94, 59, 0.05);
+}
+/* 左：月龄文案；右：两链接纵向、靠右；行底对齐——「下周」链接底与左侧副标题底平齐 */
+.baby-bar-top {
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+.baby-bar-top--full {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+}
+.baby-bar-head {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+.baby-bar-head--allergen-only {
+  justify-content: center;
+}
+/* 与 .welcome-card-icon 一致 */
+.baby-bar-icon {
+  font-size: 44rpx;
+  line-height: 1;
+}
+/* 参考摄入、过敏：与上方鼓励语分层 */
+.baby-bar-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid rgba(160, 216, 192, 0.35);
+}
+/* 与 .welcome-card-title 一致 */
+.baby-bar-main {
+  display: block;
+  min-width: 0;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+.baby-bar-tagline {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 400;
+  color: #6d8474;
+  line-height: 1.45;
+}
+.baby-bar-intake {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.baby-bar-allergen {
+  display: block;
+  min-width: 0;
+  font-size: 24rpx;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.baby-bar-actions {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12rpx;
+  margin-top: 10rpx;
+}
+.baby-bar-link {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: var(--green-deep);
+  border-bottom: 1rpx solid rgba(107, 168, 106, 0.45);
+  padding-bottom: 2rpx;
+  line-height: 1.35;
+}
+.baby-bar-link:active {
+  opacity: 0.55;
+}
+
+.setup-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(100deg, #fff9f0 0%, #f3faf6 55%, #eef6f1 100%);
+  border: 2rpx solid rgba(244, 184, 96, 0.35);
+  border-radius: 32rpx;
+  padding: 24rpx 32rpx;
+  margin-bottom: 32rpx;
+  box-sizing: border-box;
+}
+.setup-banner-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: var(--text-heading);
+  line-height: 1.45;
+}
+.setup-banner-arrow {
+  font-size: 26rpx;
+  color: #c98a2d;
+  font-weight: 600;
+  margin-left: 16rpx;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32rpx;
+  padding: 0;
+}
+/* 并入今日餐卡：与下方餐次列表区分 */
+.page-header--in-card {
+  margin-bottom: 0;
+  padding-bottom: 24rpx;
+  border-bottom: 2rpx solid var(--border-warm);
+}
+.page-header-text {
+  flex: 1;
+  min-width: 0;
+}
+.page-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-bottom: 8rpx;
+}
+.page-title {
+  font-size: 34rpx;
+  font-weight: 600;
+  color: var(--text-heading);
+  line-height: 48rpx;
+}
+.page-title-emoji {
+  font-size: 32rpx;
+  line-height: 48rpx;
+  flex-shrink: 0;
+}
+.page-subtitle {
+  display: block;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+/* 轻量文字按钮：与 setup-banner 箭头同系，弱提示、可点 */
+.btn-adjust-today {
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: 16rpx;
+  padding: 16rpx 8rpx 16rpx 12rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: var(--green-deep);
+  line-height: 1.35;
+  border-bottom: 1rpx solid rgba(127, 183, 126, 0.45);
+}
+.btn-adjust-today:active {
+  opacity: 0.55;
+}
+
+/* 餐卡内加载：浅色条，不再单独成卡 */
+.today-meals-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+.skeleton-meal-row {
+  height: 96rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(90deg, #f0f4f1 0%, #e8f0ec 50%, #f0f4f1 100%);
+  background-size: 200% 100%;
+}
+
+/* 餐卡：标题 + 餐次列表同卡；更大圆角、柔散阴影 */
+.today-meals-card {
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+  background: #fff;
+  border-radius: 40rpx;
+  padding: 32rpx 28rpx;
+  margin-bottom: 32rpx;
+  border: none;
+  box-shadow: 0 14rpx 44rpx rgba(127, 183, 126, 0.09), 0 6rpx 22rpx rgba(74, 98, 72, 0.045);
+  box-sizing: border-box;
+}
+.today-meals-card--empty .today-meals-empty-body {
+  text-align: center;
+  padding: 8rpx 0 8rpx;
+}
+.meal-slot {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border-bottom: none;
+  gap: 28rpx;
+}
+/* 与本周计划页 .meal-slot-cell 一致：餐次名 + BLW 紧跟、可换行 */
+.meal-slot-left {
+  flex-shrink: 0;
+  width: 144rpx;
+  align-self: center;
+  padding-right: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}
+/* 餐次锚点：略深 + 半粗，弱于菜名但仍一眼可扫 */
+.meal-slot-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #4a5c4e;
+  line-height: 1.35;
+}
+/* 与 week.wxss .meal-blw-tag 同规格；色系用主题绿（无备餐卡片色变量） */
+.meal-slot-left .meal-blw-tag {
+  font-size: 22rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 12rpx;
+  line-height: 1.4;
+  flex-shrink: 0;
+  color: var(--green-deep);
+  background: rgba(160, 216, 192, 0.28);
+}
+.meal-slot-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14rpx;
+}
+
+.dish-row {
+  display: flex;
+  align-items: center;
+  min-height: 96rpx;
+  padding: 22rpx 0;
+  border-bottom: 2rpx solid var(--border-warm);
+}
+.dish-row:last-child {
+  border-bottom: none;
+}
+/* 菜品之间仅用间距分隔，无硬线 */
+.dish-row-compact {
+  min-height: 0;
+  padding: 2rpx 0;
+  border-bottom: none;
+  box-sizing: border-box;
+}
+.meal-slot-right .dish-row-compact:last-child {
+  padding-bottom: 0;
+}
+/* 轻量「完成」：无边框 outline 感，仅极浅底，避免抢菜名 */
+.dish-check-done {
+  flex-shrink: 0;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6rpx;
+  min-width: 108rpx;
+  min-height: 56rpx;
+  padding: 10rpx 22rpx;
+  margin: 0;
+  border: none;
+  background: rgba(42, 58, 52, 0.05);
+  border-radius: 999rpx;
+  box-sizing: border-box;
+}
+.dish-check-done--on {
+  background: rgba(127, 183, 126, 0.12);
+}
+.dish-done-pill-mark {
+  font-size: 22rpx;
+  color: var(--green-deep);
+  font-weight: 600;
+  line-height: 1;
+}
+.dish-done-pill-text {
+  font-size: 24rpx;
+  color: var(--text-muted);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.dish-check-done--on .dish-done-pill-text {
+  color: var(--green-deep);
+}
+.dish-check-done:active {
+  opacity: 0.88;
+}
+/* 菜名：常规字重，与早期一致 */
+.dish-name {
+  display: block;
+  width: 100%;
+  font-size: 28rpx;
+  font-weight: 400;
+  color: #2f3a35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.5;
+}
+.dish-name-compact {
+  font-size: 28rpx;
+  font-weight: 400;
+}
+/* 菜名 + 状态标签（仅在有标记时展示）；长按菜名可标记宝宝喜欢/收藏 */
+.dish-cell-name {
+  flex: 1;
+  min-width: 0;
+  padding-right: 8rpx;
+}
+.dish-name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12rpx 16rpx;
+  width: 100%;
+}
+.dish-name-row .dish-name {
+  flex: 1;
+  min-width: 120rpx;
+  width: auto;
+  max-width: 100%;
+}
+.dish-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  flex-shrink: 0;
+  line-height: 1.35;
+}
+/* 喜欢 #FF6B6B 柔和浅底；收藏 #F6C344 浅底 */
+.dish-tag-like {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.12);
+}
+.dish-tag-fav {
+  color: #c98a2d;
+  background: rgba(244, 184, 96, 0.24);
+}
+.empty-title {
+  display: block;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  margin-bottom: 28rpx;
+  line-height: 1.45;
+}
+/* 同规范「添加过敏」次级块按钮 */
+.btn-outline-cta {
+  display: inline-block;
+  padding: 20rpx 28rpx;
+  font-size: 28rpx;
+  font-weight: 400;
+  color: var(--green-deep);
+  background: rgba(160, 216, 192, 0.22);
+  border-radius: 24rpx;
+  line-height: 1.4;
+}
+
+/* 明日备菜提醒、喂养小知识：同一套卡片样式 */
+.tomorrow-card,
+.feeding-tip-card {
+  background: #fff;
+  border: 2rpx solid var(--border-warm);
+  border-radius: 32rpx;
+  border-left: 8rpx solid rgba(160, 216, 192, 0.85);
+  padding: 28rpx;
+  margin-bottom: 32rpx;
+  box-shadow: 0 6rpx 20rpx rgba(127, 183, 126, 0.07);
+  box-sizing: border-box;
+}
+.tomorrow-card-title,
+.feeding-tip-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2f3a35;
+  margin-bottom: 16rpx;
+  line-height: 1.3;
+}
+.tomorrow-lines,
+.feeding-tip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.tomorrow-line,
+.feeding-tip-line {
+  display: block;
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.tomorrow-empty {
+  font-size: 26rpx;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.bottom-safe {
+  height: env(safe-area-inset-bottom);
+  min-height: 24rpx;
+}

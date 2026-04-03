@@ -1,6 +1,7 @@
 {
   "subPackages": [],
   "pages": [
+    "pages/todayFood/todayFood",
     "pages/home/home",
     "pages/me/me",
     "pages/week/week",
@@ -19,16 +20,16 @@
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "妈妈小助理|辅食计划",
-    "navigationBarBackgroundColor": "#ffffff"
+    "navigationBarBackgroundColor": "#F7FAF8"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#07c160",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "color": "#8a978e",
+    "selectedColor": "#7FB77E",
+    "backgroundColor": "#F7FAF8",
+    "borderStyle": "white",
     "list": [
       {
-        "pagePath": "pages/home/home",
+        "pagePath": "pages/todayFood/todayFood",
         "text": "辅食",
         "iconPath": "assets/tab-home.png",
         "selectedIconPath": "assets/tab-home-active.png"

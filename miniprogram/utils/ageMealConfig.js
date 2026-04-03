@@ -16,11 +16,11 @@ const MEAL_LABELS = {
   breakfast: '早餐',
   lunch: '午餐',
   dinner: '晚餐',
-  snack_am: '上午加餐',
+  snack_am: '加餐',
   snack_pm: '下午加餐',
-  snack1: '上午加餐',
+  snack1: '加餐',
   snack2: '下午加餐',
-  morningSnack: '上午加餐',
+  morningSnack: '加餐',
   afternoonSnack: '下午加餐',
 }
 

@@ -7,7 +7,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
-const MEAL_LABELS = { breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snack_am: '上午加餐', snack_pm: '下午加餐' };
+const MEAL_LABELS = { breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snack_am: '加餐', snack_pm: '下午加餐' };
 
 function amountDisplay(amountValue, amountText, unit) {
   if (amountText) return amountText;

@@ -1,7 +1,7 @@
 // pages/week/week.ts
 const { callCloud } = require('../../utils/cloud.js')
 const { getOrderedSlotsForAge, SLOT_ORDER, MEAL_LABELS: CONFIG_MEAL_LABELS } = require('../../utils/ageMealConfig.js')
-const { generateMockWeekPlan, getWeekDates, getWeekdayLabel } = require('../../utils/weekPlanMock.js')
+const { generateMockWeekPlan, getWeekDates, getWeekdayLabel, mockRecipes } = require('../../utils/weekPlanMock.js')
 
 const MEAL_LABELS: Record<string, string> = { ...CONFIG_MEAL_LABELS }
 
@@ -11,6 +11,16 @@ const WEEKDAY_SHORT = ['一', '二', '三', '四', '五', '六', '日']
 const TEMPLATE_COLORS = ['#7FB77E', '#7EA9D6', '#E8A87C', '#A88BC0', '#7EC8C8', '#E8A8B8', '#9E9E9E']
 /** 对应浅色背景（日期块/卡片头） */
 const TEMPLATE_BG_COLORS = ['#EAF7EF', '#EEF5FF', '#FFF3EB', '#F3EFF8', '#E8F7F7', '#FFEEF3', '#F2F2F2']
+
+/** 根据生日字符串 YYYY-MM-DD 计算当前月龄（整数月） */
+function getAgeMonthsFromBirthday(birthday: string): number | null {
+  if (!birthday || !/^\d{4}-\d{2}-\d{2}$/.test(birthday)) return null
+  const birth = new Date(birthday + 'T12:00:00')
+  const now = new Date()
+  if (birth.getTime() > now.getTime()) return null
+  const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  return Math.max(0, months)
+}
 
 /** full_reset 固定方案表（与产品一致）：1套7 / 2套4-3 / 3套2-3-2 / 4套2-2-2-1 / 5套2-1-2-1-1 / 6套1-1-2-1-1-1 / 7套1-1-1-1-1-1-1 */
 function getDefaultDayAssignments(menuCount: number): number[] {
@@ -88,14 +98,20 @@ Page({
     assignDateLabels: '' as string,
   },
 
-  onLoad(opt: { weekStartDate?: string; needConfirm?: string; useMock?: string }) {
+  onLoad(opt: { weekStartDate?: string; needConfirm?: string; useMock?: string; babyBirthday?: string; babyAgeMonths?: string }) {
     const weekStartDate = opt?.weekStartDate || this.getThisMonday()
     const isNextWeek = weekStartDate === this.getNextMonday()
+    const ageFromParam = opt?.babyAgeMonths != null && opt.babyAgeMonths !== '' ? parseInt(opt.babyAgeMonths, 10) : null
+    const ageFromBirthday = opt?.babyBirthday ? getAgeMonthsFromBirthday(opt.babyBirthday) : null
+    const babyAgeMonths = (ageFromParam != null && !isNaN(ageFromParam))
+      ? ageFromParam
+      : (ageFromBirthday != null ? ageFromBirthday : null)
     wx.setNavigationBarTitle({ title: isNextWeek ? '下周计划' : '本周计划' })
     this.setData({
       weekStartDate,
       isNextWeek,
       needConfirm: opt?.needConfirm === '1',
+      babyAgeMonths: babyAgeMonths ?? this.data.babyAgeMonths,
     })
     if (opt?.useMock === '1') {
       try {
@@ -158,28 +174,42 @@ Page({
     weekStartDate: string
   ) {
     const { weekPlan } = result
-    const mealSlots = SLOT_ORDER as string[]
+    const age = this.data.babyAgeMonths != null ? this.data.babyAgeMonths : 8
+    const slotsFromAge = getOrderedSlotsForAge(age) as string[]
+    const mealSlots = slotsFromAge.length > 0 ? slotsFromAge : (SLOT_ORDER as string[])
     const settingsDayBindings: number[] = []
     for (let d = 0; d < 7; d++) {
       const date = this.addDays(weekStartDate, d)
       const idx = weekPlan.items.findIndex((it) => it.assignedDates && it.assignedDates.indexOf(date) >= 0)
       settingsDayBindings.push(idx >= 0 ? idx + 1 : 0)
     }
-    const templateCards = weekPlan.items.map((item, idx) => ({
-      templateId: item.id,
-      templateName: `备餐${idx + 1}`,
-      weekdaysLabel: item.assignedDates.map((d) => getWeekdayLabel(d)).join(' '),
-      dateChips: item.assignedDates.map((date) => ({ date, weekdayLabel: getWeekdayLabel(date) })),
-      meals: mealSlots.map((mealKey) => ({
-        mealKey,
-        mealLabel: MEAL_LABELS[mealKey] || mealKey,
-        recipeName: item.recipeName,
-        blw: false,
-        overrideSuffix: '',
-        hasOverride: false,
-      })),
-      recipeId: item.recipeId,
-    }))
+    const templateCards = weekPlan.items.map((item, idx) => {
+      const recipesPerMeal = idx === 0 ? (item as any).recipesPerMeal : null
+      return {
+        templateId: item.id,
+        templateName: `备餐${idx + 1}`,
+        weekdaysLabel: item.assignedDates.map((d) => getWeekdayLabel(d)).join(' '),
+        dateChips: item.assignedDates.map((date) => ({ date, weekdayLabel: getWeekdayLabel(date) })),
+        meals: mealSlots.map((mealKey) => {
+          let recipeName = item.recipeName
+          if (recipesPerMeal) {
+            const slotIndex = (SLOT_ORDER as string[]).indexOf(mealKey)
+            const ids = slotIndex >= 0 && recipesPerMeal[slotIndex] ? recipesPerMeal[slotIndex] : [item.recipeId]
+            const names = ids.map((id: number) => (mockRecipes || []).find((r: { id: number; name: string }) => r.id === id)?.name).filter(Boolean)
+            if (names.length) recipeName = names.join(' · ')
+          }
+          return {
+            mealKey,
+            mealLabel: MEAL_LABELS[mealKey] || mealKey,
+            recipeName,
+            blw: mealKey === 'lunch',
+            overrideSuffix: '',
+            hasOverride: false,
+          }
+        }),
+        recipeId: item.recipeId,
+      }
+    })
     const settingsNVal = weekPlan.prepCount
     const settingsTemplateIds = weekPlan.items.map((i) => i.id)
     const settingsTabList = Array.from({ length: settingsNVal }, (_, i) => i)
@@ -193,7 +223,7 @@ Page({
       settingsSelectedIndex: 1,
       mealSlots,
       mockWeekPlan: weekPlan,
-      babyAgeMonths: this.data.babyAgeMonths != null ? this.data.babyAgeMonths : 8,
+      babyAgeMonths: this.data.babyAgeMonths != null ? this.data.babyAgeMonths : age,
     }, () => {
       this.refreshSettingsDayCellList()
       this.refreshDisplayTemplateCards()
@@ -237,15 +267,35 @@ Page({
     }
   },
 
-  /** 点击卡片区域 -> Mock 下进 prepEdit，否则进 templateEdit */
+  /** 点击卡片空白区域 -> Mock 下进 prepEdit，否则进 templateEdit（餐次名点击见 onMealSlotTap，统一进备餐编辑） */
   onCardTap(e: WechatMiniprogram.TouchEvent) {
     const prepId = (e.currentTarget.dataset.prepId as string) || ''
     if (!prepId) return
     if (this.data.useMockPlan) {
       wx.navigateTo({ url: `/pages/prepEdit/prepEdit?id=${prepId}` })
     } else {
-      wx.navigateTo({ url: `/pages/templateEdit/templateEdit?templateId=${prepId}` })
+      const age = this.data.babyAgeMonths
+      const ageParam = age != null && age !== '' ? `&babyAgeMonths=${age}` : ''
+      wx.navigateTo({ url: `/pages/templateEdit/templateEdit?templateId=${prepId}${ageParam}` })
     }
+  },
+
+  /** 点击餐次名（早餐/午餐等）-> 与三点菜单「编辑备餐」一致，进入 templateEdit */
+  onMealSlotTap(e: WechatMiniprogram.TouchEvent) {
+    const templateId = (e.currentTarget.dataset.templateId as string) || ''
+    const cardIndex = Number(e.currentTarget.dataset.cardIndex)
+    const isPlaceholder = e.currentTarget.dataset.isPlaceholder === true
+    if (isPlaceholder || !templateId) return
+    const cards = this.data.displayTemplateCards || []
+    const templateName =
+      cards[cardIndex] && cards[cardIndex].templateName ? cards[cardIndex].templateName : `备餐${cardIndex + 1}`
+    const nameParam = templateName ? `&templateName=${encodeURIComponent(templateName)}` : ''
+    const mockParam = this.data.useMockPlan ? '&useMock=1' : ''
+    const age = this.data.babyAgeMonths
+    const ageParam = age != null && age !== '' ? `&babyAgeMonths=${age}` : ''
+    wx.navigateTo({
+      url: `/pages/templateEdit/templateEdit?templateId=${templateId}${nameParam}${mockParam}${ageParam}`,
+    })
   },
 
   /** §12.2 压缩日期显示：连续 "周一–周三"，不连续 "周二、周四"，空 "暂未使用" */
@@ -489,17 +539,28 @@ Page({
     this.applyMenuCountChange(newN)
   },
 
-  /** 弹框内点击保存（无计划时仅关闭弹框，套数已由选择时即时应用） */
+  /** 弹框内点击保存（无计划时仅关闭弹框；Mock 模式不调云端，只关弹框并提示） */
   onSaveSettingsInModal() {
     if (!this.data.templateCards || this.data.templateCards.length === 0) {
       this.setData({ showMenuCountModal: false })
       return
     }
+    if (this.data.useMockPlan) {
+      this.setData({ showMenuCountModal: false })
+      wx.showToast({ title: '备餐数已更新', icon: 'none' })
+      return
+    }
     this.onSaveSettings()
   },
 
-  /** 弹框内改套数：一律按固定方案表分配，并截断 templateIds 与套数一致 */
+  /** 弹框内改套数：Mock 模式按 newN 重新生成完整 Mock 计划（含新备餐的菜谱与日期）；非 Mock 按固定方案表分配 */
   applyMenuCountChange(newN: number) {
+    if (this.data.useMockPlan && this.data.weekStartDate) {
+      const weekDates = getWeekDates(this.data.weekStartDate)
+      const result = generateMockWeekPlan(newN, weekDates)
+      this.applyMockWeekPlan(result, this.data.weekStartDate)
+      return
+    }
     const dayBindings = getDefaultDayAssignments(newN)
     const tabList = Array.from({ length: newN }, (_, i) => i)
     const templateIds = (this.data.settingsTemplateIds || []).slice(0, newN)
@@ -539,12 +600,18 @@ Page({
     const N = this.data.settingsNVal || 1
     const items = ['编辑备餐', '换一组']
     if (N > 1) items.push('删除备餐')
+    const cards = this.data.displayTemplateCards || []
+    const templateName = (cards[index] && cards[index].templateName) ? cards[index].templateName : `备餐${index + 1}`
+    const nameParam = templateName ? `&templateName=${encodeURIComponent(templateName)}` : ''
+    const mockParam = this.data.useMockPlan ? '&useMock=1' : ''
+    const age = this.data.babyAgeMonths
+    const ageParam = age != null && age !== '' ? `&babyAgeMonths=${age}` : ''
     wx.showActionSheet({
       itemList: items,
       success: (res) => {
         if (res.tapIndex === 0) {
           if (!isPlaceholder && templateId) {
-            wx.navigateTo({ url: `/pages/templateEdit/templateEdit?templateId=${templateId}` })
+            wx.navigateTo({ url: `/pages/templateEdit/templateEdit?templateId=${templateId}${nameParam}${mockParam}${ageParam}` })
           }
         } else if (res.tapIndex === 1) {
           this.onRegenerateCard(index, templateId, isPlaceholder)
@@ -676,13 +743,15 @@ Page({
     this.setData({ loading: false })
     const weekConfirmed = !!(result.settings && result.settings.confirmed)
     if (result.success === false || !result.plan || !result.plan.days) {
+      const fallbackAge = result.babyAgeMonths != null ? result.babyAgeMonths : this.data.babyAgeMonths
+      const mealSlotsEmpty = fallbackAge != null ? getOrderedSlotsForAge(fallbackAge) : (SLOT_ORDER as string[])
       this.setData({
         days: [],
         templateCards: [],
         settingsSummary: '',
         settingsN: 0,
-        mealSlots: result.babyAgeMonths != null ? getOrderedSlotsForAge(result.babyAgeMonths) : (SLOT_ORDER as string[]),
-        babyAgeMonths: result.babyAgeMonths != null ? result.babyAgeMonths : null,
+        mealSlots: mealSlotsEmpty,
+        babyAgeMonths: result.babyAgeMonths != null ? result.babyAgeMonths : this.data.babyAgeMonths,
         weekConfirmed,
         settingsNVal: 3,
         settingsDayBindings: [1, 1, 2, 2, 2, 3, 3],
@@ -701,7 +770,7 @@ Page({
     templates.forEach((t) => { if (t && t._id) tplMap[t._id] = t.name || '' })
     const assignMap: Record<string, string> = {}
     dateAssignments.forEach((a: { date: string; templateId: string }) => { if (a.date) assignMap[a.date] = tplMap[a.templateId] || '' })
-    const babyAgeMonths = result.babyAgeMonths != null ? Number(result.babyAgeMonths) : null
+    const babyAgeMonths = result.babyAgeMonths != null ? Number(result.babyAgeMonths) : this.data.babyAgeMonths
     const planDays = result.plan.days || []
     const firstDayMeals = (planDays[0] && planDays[0].meals) ? planDays[0].meals : []
     const firstDayKeys = firstDayMeals.map((m: any) => m.mealKey)
@@ -847,11 +916,16 @@ Page({
   },
 
   async onConfirmWeek() {
-    const { weekStartDate, isNextWeek } = this.data
+    const { weekStartDate, isNextWeek, useMockPlan } = this.data
+    if (useMockPlan) {
+      wx.showToast({ title: isNextWeek ? '✔️ 好的，下周计划已准备好' : '✔️ 好的，本周计划开始啦', icon: 'none', duration: 2000 })
+      wx.switchTab({ url: '/pages/todayFood/todayFood' })
+      return
+    }
     const res = await callCloud('confirmWeek', { weekStartDate }, { showLoading: true, loadingTitle: '确认中...' })
     if (res.success) {
       wx.showToast({ title: isNextWeek ? '✔️ 好的，下周计划已准备好' : '✔️ 好的，本周计划开始啦', icon: 'none', duration: 2000 })
-      wx.switchTab({ url: '/pages/home/home' })
+      wx.switchTab({ url: '/pages/todayFood/todayFood' })
     }
   },
 })

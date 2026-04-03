@@ -94,6 +94,127 @@ export function getMockRecipeDetail(id: number): {
       },
       tips: ['南瓜富含胡萝卜素，建议与油脂同食更易吸收'],
     },
+    3: {
+      basic: {
+        name: '西兰花鸡肉泥',
+        ageMonthMin: 6,
+        ageMonthMax: 8,
+        type: 'puree',
+        texture: 'mashed',
+        description: '适合 6–8 月龄的泥糊，西兰花与鸡肉搭配',
+      },
+      steps: [
+        { stepNo: 1, content: '西兰花焯水至软，取花蕾部分' },
+        { stepNo: 2, content: '鸡胸肉煮熟后剁碎' },
+        { stepNo: 3, content: '西兰花与鸡肉一同打成泥即可' },
+      ],
+      ingredients: [
+        { name: '西兰花', amountDisplay: '20g' },
+        { name: '鸡胸肉', amountDisplay: '25g' },
+      ],
+      prepSummary: {
+        weekend: ['西兰花 20g 焯熟冷冻', '鸡胸肉 25g 剁碎冷冻'],
+        dayBefore: ['西兰花 20g 解冻', '鸡胸肉 25g 解冻'],
+      },
+      tips: ['西兰花可先焯水去农残，再打泥更细腻'],
+    },
+    4: {
+      basic: {
+        name: '苹果燕麦粥',
+        ageMonthMin: 6,
+        ageMonthMax: 8,
+        type: 'porridge',
+        texture: 'porridge',
+        description: '适合 6–8 月龄的燕麦粥，苹果增加风味',
+      },
+      steps: [
+        { stepNo: 1, content: '燕麦片加水煮软' },
+        { stepNo: 2, content: '苹果去皮去核切小块，蒸熟压泥' },
+        { stepNo: 3, content: '将苹果泥加入燕麦粥中拌匀即可' },
+      ],
+      ingredients: [
+        { name: '燕麦片', amountDisplay: '20g' },
+        { name: '苹果', amountDisplay: '30g' },
+      ],
+      prepSummary: {
+        weekend: ['苹果 30g 蒸熟压泥冷冻'],
+        dayBefore: ['燕麦 20g 提前煮粥', '苹果泥 30g 解冻'],
+      },
+      tips: ['苹果可选用口感偏面的品种，煮后更易压泥'],
+    },
+    5: {
+      basic: {
+        name: '土豆牛肉泥',
+        ageMonthMin: 7,
+        ageMonthMax: 9,
+        type: 'puree',
+        texture: 'mashed',
+        description: '适合 7–9 月龄的泥糊，补铁好选择',
+      },
+      steps: [
+        { stepNo: 1, content: '土豆去皮切块蒸熟压泥' },
+        { stepNo: 2, content: '牛肉焯水后煮熟，剁碎或打泥' },
+        { stepNo: 3, content: '土豆泥与牛肉泥混合拌匀即可' },
+      ],
+      ingredients: [
+        { name: '土豆', amountDisplay: '40g' },
+        { name: '牛肉', amountDisplay: '25g' },
+      ],
+      prepSummary: {
+        weekend: ['土豆 40g 蒸熟压泥冷冻', '牛肉 25g 煮熟剁碎冷冻'],
+        dayBefore: ['土豆泥 40g 解冻', '牛肉泥 25g 解冻'],
+      },
+      tips: ['牛肉可选用里脊或嫩肩，煮熟后更易打泥'],
+    },
+    6: {
+      basic: {
+        name: '胡萝卜土豆泥',
+        ageMonthMin: 6,
+        ageMonthMax: 8,
+        type: 'puree',
+        texture: 'mashed',
+        description: '适合 6–8 月龄的根茎泥，口感绵软',
+      },
+      steps: [
+        { stepNo: 1, content: '胡萝卜、土豆去皮切块蒸熟' },
+        { stepNo: 2, content: '用勺背或料理机压成泥' },
+        { stepNo: 3, content: '可加少量温水调至合适稠度' },
+      ],
+      ingredients: [
+        { name: '胡萝卜', amountDisplay: '20g' },
+        { name: '土豆', amountDisplay: '40g' },
+      ],
+      prepSummary: {
+        weekend: ['胡萝卜 20g 蒸熟压泥冷冻', '土豆 40g 蒸熟压泥冷冻'],
+        dayBefore: ['胡萝卜泥 20g 解冻', '土豆泥 40g 解冻'],
+      },
+      tips: ['根茎类易氧化，现做现吃或冷冻保存'],
+    },
+    7: {
+      basic: {
+        name: '山药鸡肉粥',
+        ageMonthMin: 6,
+        ageMonthMax: 8,
+        type: 'porridge',
+        texture: 'porridge',
+        description: '适合 6–8 月龄的软烂粥，山药健脾',
+      },
+      steps: [
+        { stepNo: 1, content: '大米淘净，山药去皮切小块' },
+        { stepNo: 2, content: '大米与山药一同加水煮成粥' },
+        { stepNo: 3, content: '鸡胸肉煮熟剁碎，加入粥中煮片刻即可' },
+      ],
+      ingredients: [
+        { name: '大米', amountDisplay: '25g' },
+        { name: '山药', amountDisplay: '30g' },
+        { name: '鸡胸肉', amountDisplay: '20g' },
+      ],
+      prepSummary: {
+        weekend: ['山药 30g 蒸熟压泥冷冻', '鸡胸肉 20g 剁碎冷冻'],
+        dayBefore: ['大米 25g 提前煮粥', '山药泥 30g 解冻', '鸡肉泥 20g 解冻'],
+      },
+      tips: ['山药处理时可戴手套，避免黏液刺激手部'],
+    },
   }
   const raw = map[id]
   if (!raw) return null

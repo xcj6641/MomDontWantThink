@@ -12,7 +12,13 @@ Page({
     birthdayValid: false as boolean,
     generating: false as boolean,
     thisWeekStartDate: '' as string,
-    todayMeals: [] as Array<{ mealKey: string; mealLabel?: string; recipeName: string; recipeId?: string; blw: boolean }>,
+    todayMeals: [] as Array<{
+      mealKey: string
+      mealLabel?: string
+      recipeName: string
+      recipeId?: string
+      blw: boolean
+    }>,
     tomorrowTip: '' as string,
     nextWeekStatus: 'none' as string,
     nextWeekStartDate: '' as string,
@@ -81,7 +87,7 @@ Page({
       }
       this.setData({
         todayMeals: [],
-        tomorrowTip: '去生成下周计划吧～',
+        tomorrowTip: '',
         nextWeekStatus: 'none',
         nextWeekStartDate: this.getNextMonday(),
       })
@@ -161,15 +167,17 @@ Page({
       const result = generateMockWeekPlan(3, weekDates)
       wx.setStorageSync('mockWeekPlan', JSON.stringify(result))
       this.setData({ generating: false })
+      const ageParam = babyBirthday ? `&babyBirthday=${encodeURIComponent(babyBirthday)}` : ''
       wx.navigateTo({
-        url: `/pages/week/week?weekStartDate=${weekStart}&needConfirm=1&useMock=1`,
+        url: `/pages/week/week?weekStartDate=${weekStart}&needConfirm=1&useMock=1${ageParam}`,
       })
       return
     }
     const genRes = await callCloud('generateNextWeek', { nextWeekStartDate: weekStart }, { showLoading: true, loadingTitle: '正在帮你生成…' })
     this.setData({ generating: false })
     if (genRes.success || genRes.code === 'WEEK_ALREADY_EXISTS') {
-      wx.navigateTo({ url: `/pages/week/week?weekStartDate=${weekStart}&needConfirm=1` })
+      const ageParam = babyBirthday ? `&babyBirthday=${encodeURIComponent(babyBirthday)}` : ''
+      wx.navigateTo({ url: `/pages/week/week?weekStartDate=${weekStart}&needConfirm=1${ageParam}` })
     } else if (genRes.code === 'MISSING_BABY_AGE') {
       wx.showToast({ title: '👉 先选择宝宝生日', icon: 'none' })
     } else {

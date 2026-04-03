@@ -9,7 +9,7 @@
   height: 80rpx;
   line-height: 80rpx;
   text-align: center;
-  background: #07c160;
+  background: #7fb77e;
   color: #fff;
   border-radius: 12rpx;
   font-size: 30rpx;
@@ -39,7 +39,7 @@
 
 .recipe-item .category {
   font-size: 24rpx;
-  color: #999;
+  color: #8a978e;
 }
 
 .empty {
