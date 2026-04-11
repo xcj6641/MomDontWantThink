@@ -9,6 +9,7 @@
     "pages/templateEdit/templateEdit",
     "pages/dayEdit/dayEdit",
     "pages/nextWeek/nextWeek",
+    "pages/weekSummary/weekSummary",
     "pages/shopping/shopping",
     "pages/prepEdit/prepEdit",
     "pages/recipeDetail/recipeDetail",

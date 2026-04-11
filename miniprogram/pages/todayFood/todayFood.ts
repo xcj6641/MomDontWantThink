@@ -436,7 +436,7 @@ Page({
     wx.navigateTo({ url: '/pages/home/home' })
   },
 
-  /** 宝宝信息栏：本周计划 / 本周备餐（备餐页未上线时用 toast） */
+  /** 宝宝信息栏：本周计划 / 本周计划总览 */
   onBabyBarThisWeek() {
     const { weekStartDate, babyBirthday, thisWeekStatus } = this.data
     const age = babyBirthday ? `&babyBirthday=${encodeURIComponent(babyBirthday)}` : ''
@@ -444,10 +444,10 @@ Page({
       wx.navigateTo({ url: `/pages/week/week?weekStartDate=${weekStartDate}&needConfirm=1${age}` })
       return
     }
-    wx.showToast({ title: '本周备餐页即将上线', icon: 'none' })
+    wx.navigateTo({ url: `/pages/weekSummary/weekSummary?weekStartDate=${weekStartDate}${age}` })
   },
 
-  /** 宝宝信息栏：下周计划 / 下周备餐（备餐页未上线时用 toast） */
+  /** 宝宝信息栏：下周计划 / 下周计划总览 */
   onBabyBarNextWeek() {
     const { nextWeekStartDate, babyBirthday, nextWeekStatus } = this.data
     const age = babyBirthday ? `&babyBirthday=${encodeURIComponent(babyBirthday)}` : ''
@@ -455,7 +455,7 @@ Page({
       wx.navigateTo({ url: `/pages/week/week?weekStartDate=${nextWeekStartDate}&needConfirm=1${age}` })
       return
     }
-    wx.showToast({ title: '下周备餐页即将上线', icon: 'none' })
+    wx.navigateTo({ url: `/pages/weekSummary/weekSummary?weekStartDate=${nextWeekStartDate}&isNextWeek=1${age}` })
   },
 
   onBirthdayChange(e: WechatMiniprogram.PickerChange) {

@@ -1,0 +1,155 @@
+<view class="container">
+
+  <!-- 1. 头部信息区 -->
+  <view class="info-card">
+    <view class="info-card-icon">📅</view>
+    <view class="info-card-body">
+      <view class="info-card-top">
+        <view class="info-card-text">
+          <text class="info-card-title">备餐周期</text>
+          <text class="info-card-subtitle">{{weekDateRange}}</text>
+        </view>
+        <view class="info-card-actions">
+          <view class="fav-btn {{isFavorited ? 'fav-btn--active' : ''}}" bindtap="onToggleFavorite">
+            <image class="fav-icon" src="{{isFavorited ? '/assets/star_active.png' : '/assets/star.png'}}" mode="aspectFit"></image>
+            <text class="fav-label">{{isFavorited ? '已收藏周计划' : '收藏周计划'}}</text>
+          </view>
+          <text class="info-card-link" bindtap="onViewWeekPlan">查看/调整本周计划</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 2. 完成进度区 -->
+  <view class="progress-card">
+    <view class="progress-row">
+      <text class="progress-label">已完成 {{summary.preparedCount}} / {{summary.totalCount}} 项</text>
+      <text class="progress-pct">{{progressPercent}}%</text>
+    </view>
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{progressPercent}}%;"></view>
+      <text class="progress-bear" style="left: {{progressPercent}}%;">🥑</text>
+    </view>
+  </view>
+
+  <!-- 3. 食材清单区 -->
+  <block wx:if="{{categoryList.length > 0}}">
+    <view class="section-title">
+      <view class="section-title-left">
+        <text class="section-icon">🛒</text>
+        <text>食材清单</text>
+      </view>
+      <view class="section-title-action" bindtap="onMarkAllDone">全部标记为已完成</view>
+    </view>
+    <view class="category-card" wx:for="{{categoryList}}" wx:key="key">
+      <view class="category-header">
+        <text class="category-label">{{item.label}}</text>
+      </view>
+      <view
+        class="ingredient-row {{it.prepared ? 'row--done' : ''}}"
+        wx:for="{{item.items}}"
+        wx:for-item="it"
+        wx:key="ingredientName"
+        data-name="{{it.ingredientName}}"
+        bindtap="onToggleItem"
+      >
+        <view class="checkbox {{it.prepared ? 'checkbox--checked' : ''}}">
+          <text class="checkbox-mark" wx:if="{{it.prepared}}">✓</text>
+        </view>
+        <text class="row-main">{{it.ingredientName}}</text>
+        <text class="row-sub">{{it.amount}}</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 4. 提前准备区 -->
+  <block wx:if="{{prepTasks.length > 0}}">
+    <view class="section-title">
+      <view class="section-title-left">
+        <text class="section-icon">🥄</text>
+        <text>提前准备</text>
+        <text class="section-hint">建议周末完成</text>
+      </view>
+      <view class="section-title-action" bindtap="onMarkPrepAllDone">全部已完成</view>
+    </view>
+    <view class="category-card">
+      <view wx:for="{{prepTasks}}" wx:key="id">
+        <!-- 主操作行 -->
+        <view class="ingredient-row {{item.done ? 'row--done' : ''}}" data-id="{{item.id}}" bindtap="onTogglePrepTask">
+          <view class="checkbox {{item.done ? 'checkbox--checked' : ''}}">
+            <text class="checkbox-mark" wx:if="{{item.done}}">✓</text>
+          </view>
+          <text class="row-main">{{item.action}}</text>
+        </view>
+        <!-- 关联菜品折叠入口 -->
+        <view
+          class="used-in-row"
+          data-id="{{item.id}}"
+          catchtap="onToggleTaskExpand"
+        >
+          <text class="used-in-text">用于：{{item.usedInDishes.length}}道菜</text>
+          <view class="chevron-sm {{item.expanded ? 'chevron--open' : ''}}"></view>
+        </view>
+        <!-- 展开的菜品列表 -->
+        <view class="dishes-expanded" wx:if="{{item.expanded}}">
+          <text
+            class="dish-item"
+            wx:for="{{item.usedInDishes}}"
+            wx:for-item="dish"
+            wx:key="*this"
+          >· {{dish}}</text>
+        </view>
+        <!-- 分隔线（非最后一项） -->
+        <view class="row-divider" wx:if="{{index < prepTasks.length - 1}}"></view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 空态 -->
+  <view class="empty-state" wx:if="{{!loading && categoryList.length === 0}}">
+    <text class="empty-text">暂无备菜清单</text>
+    <text class="empty-hint">生成本周计划后会自动生成哦</text>
+  </view>
+
+  <!-- 5. 本周备餐计划详情区（折叠面板） -->
+  <block wx:if="{{mealPlanDetail.length > 0}}">
+    <view class="section-title">
+      <view class="section-title-left">
+        <text class="section-icon">📋</text>
+        <text>本周备餐计划详情</text>
+      </view>
+    </view>
+    <view class="accordion-card" wx:for="{{mealPlanDetail}}" wx:key="id">
+      <!-- 折叠标题行 -->
+      <view class="accordion-header" data-id="{{item.id}}" bindtap="onToggleBatchPanel">
+        <view class="accordion-header-left">
+          <text class="accordion-name">{{item.name}}</text>
+          <text class="accordion-weekdays">{{item.weekdays}}</text>
+        </view>
+        <view class="accordion-header-right">
+          <text class="accordion-summary">{{item.summary}}</text>
+          <view class="chevron-md {{item.expanded ? 'chevron--open' : ''}}"></view>
+        </view>
+      </view>
+      <!-- 展开内容 -->
+      <view class="accordion-body" wx:if="{{item.expanded}}">
+        <view
+          class="meal-group"
+          wx:for="{{item.mealGroups}}"
+          wx:for-item="mg"
+          wx:key="mealLabel"
+        >
+          <text class="meal-group-label">{{mg.mealLabel}}</text>
+          <text
+            class="meal-group-dish"
+            wx:for="{{mg.dishes}}"
+            wx:for-item="dish"
+            wx:key="*this"
+          >{{dish}}</text>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <view class="footer-placeholder"></view>
+</view>
