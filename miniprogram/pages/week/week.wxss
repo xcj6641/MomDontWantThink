@@ -435,12 +435,26 @@
 .confirm-area .btn-confirm-week:active {
   opacity: 0.88;
 }
-.confirm-hint {
+.plan-source-label {
   display: block;
   text-align: center;
   font-size: 24rpx;
-  color: #9CA3A8;
-  margin-top: 16rpx;
+  color: #6e7b70;
+  margin-bottom: 20rpx;
+}
+.save-plan-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  margin-bottom: 20rpx;
+}
+.save-plan-checkbox {
+  transform: scale(0.8);
+}
+.save-plan-label {
+  font-size: 26rpx;
+  color: #6e7b70;
 }
 
 /* ========== 弹框 ========== */
@@ -464,11 +478,10 @@
   z-index: 101;
 }
 .menu-count-modal-title {
-  font-size: 32rpx;
+  font-size: 30rpx;
   font-weight: 600;
   color: #2F3A35;
   margin-bottom: 32rpx;
-  text-align: center;
 }
 .date-assign-modal-content {
   font-size: 28rpx;
@@ -510,6 +523,92 @@
 }
 .menu-count-save-btn::after {
   border: none;
+}
+/* 安排方式选择区 */
+.arrangement-section {
+  margin-bottom: 32rpx;
+}
+.arrangement-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2F3A35;
+  margin-bottom: 20rpx;
+}
+.arrangement-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+.arrangement-opt {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20rpx;
+  padding: 24rpx;
+  border-radius: 32rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #EAEFEA;
+}
+.arrangement-opt.selected {
+  background: #F3F8F4;
+  border-color: #7FB77E;
+}
+.arrangement-opt-radio {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 3rpx solid #B0C4B1;
+  flex-shrink: 0;
+  margin-top: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arrangement-opt.selected .arrangement-opt-radio {
+  border-color: #7FB77E;
+}
+.arrangement-opt-radio-inner {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  background: #7FB77E;
+}
+.arrangement-opt-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.arrangement-opt-label {
+  font-size: 28rpx;
+  color: #2F3A35;
+  line-height: 1.4;
+}
+.arrangement-opt.selected .arrangement-opt-label {
+  color: #4A8A4A;
+  font-weight: 500;
+}
+.arrangement-demo-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 14rpx;
+  margin-top: 8rpx;
+}
+.arrangement-demo-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+.arrangement-demo-day {
+  font-size: 20rpx;
+  color: #9aaba2;
+  line-height: 1;
+}
+.arrangement-demo-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
 }
 
 /* ========== 空态 ========== */

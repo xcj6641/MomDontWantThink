@@ -5,6 +5,11 @@
     <view class="debug-mode-item {{weekDebugViewMode === 'auto' ? 'active' : ''}}" data-mode="auto" bindtap="onSelectWeekDebugMode">自动（跟数据）</view>
     <view class="debug-mode-item {{weekDebugViewMode === 'regular' ? 'active' : ''}}" data-mode="regular" bindtap="onSelectWeekDebugMode">强制常规页</view>
     <view class="debug-mode-item {{weekDebugViewMode === 'exception' ? 'active' : ''}}" data-mode="exception" bindtap="onSelectWeekDebugMode">强制异常页</view>
+    <text class="debug-panel-title" style="margin-top:16rpx">确认区场景</text>
+    <view class="debug-mode-item {{debugConfirmScenario === '' ? 'active' : ''}}" data-scenario="auto_reset" bindtap="onSelectDebugConfirmScenario">自动（跟业务）</view>
+    <view class="debug-mode-item {{debugConfirmScenario === 'auto' ? 'active' : ''}}" data-scenario="auto" bindtap="onSelectDebugConfirmScenario">情况3：自动生成</view>
+    <view class="debug-mode-item {{debugConfirmScenario === 'from-saved' ? 'active' : ''}}" data-scenario="from-saved" bindtap="onSelectDebugConfirmScenario">情况1：来自收藏未修改</view>
+    <view class="debug-mode-item {{debugConfirmScenario === 'modified-saved' ? 'active' : ''}}" data-scenario="modified-saved" bindtap="onSelectDebugConfirmScenario">情况2：基于收藏已修改</view>
   </view>
 
   <!-- 顶部状态提示卡片：独立信息卡，左侧图标 -->
@@ -31,12 +36,8 @@
   <block wx:else>
     <view class="date-district-card">
       <view class="date-district-title-row">
-        <text class="date-district-prep-title">本周备 {{settingsNVal || 3}} 套备餐</text>
+        <text class="date-district-prep-title">{{isNextWeek ? '下周' : '本周'}}备 {{settingsNVal || 3}} 套备餐</text>
         <text class="date-district-adjust" catchtap="onOpenMenuCountModal">调整</text>
-      </view>
-      <view class="date-district-summary-row">
-        <text class="date-district-label">日期分配</text>
-        <text class="date-district-tag">{{settingsDistributionText}}</text>
       </view>
       <view class="prep-buttons">
         <view
@@ -89,7 +90,7 @@
               <view class="template-card-menu" catchtap="onCardMenuTap" data-index="{{cardIndex}}" data-template-id="{{item.templateId}}" data-is-placeholder="{{item.isPlaceholder}}">⋯</view>
             </view>
             <view class="template-dates-chips">
-              <text class="date-chip" wx:for="{{item.dateChips}}" wx:key="date" data-date="{{item.date}}" data-prep-id="{{item.templateId}}" bindtap="onTapDate">{{item.weekdayLabel}}</text>
+              <text class="date-chip" wx:for="{{item.dateChips}}" wx:key="date" data-date="{{item.date}}" data-prep-id="{{item.templateId}}" catchtap="onTapDate">{{item.weekdayLabel}}</text>
             </view>
           </view>
           <!-- 日期区与菜单区之间淡分隔线 -->
@@ -123,8 +124,26 @@
       </view>
       <!-- 与备餐卡片同分支：只要当前展示的是备餐列表（含 Mock/云端），底部即显示确认 -->
       <view class="confirm-area">
-        <button class="btn-confirm-week" bindtap="onConfirmWeek">{{isNextWeek ? '确认并开始下周计划' : '确认并开始本周计划'}}</button>
-        <text class="confirm-hint">确认后回到「今天安排」，之后也能随时调整</text>
+        <!-- 情况1：来自收藏，未修改 -->
+        <block wx:if="{{effectiveConfirmScenario === 'from-saved'}}">
+          <text class="plan-source-label">来自「{{planSourceLabel}}」</text>
+        </block>
+        <!-- 情况2：基于收藏，已修改 -->
+        <block wx:elif="{{effectiveConfirmScenario === 'modified-saved'}}">
+          <text class="plan-source-label">已基于「{{planSourceLabel}}」做调整</text>
+          <view class="save-plan-row" bindtap="onToggleSavePlan">
+            <checkbox class="save-plan-checkbox" checked="{{savePlan}}" color="#7fb77e"/>
+            <text class="save-plan-label">收藏新的周计划</text>
+          </view>
+        </block>
+        <!-- 情况3：自动生成 -->
+        <block wx:else>
+          <view class="save-plan-row" bindtap="onToggleSavePlan">
+            <checkbox class="save-plan-checkbox" checked="{{savePlan}}" color="#7fb77e"/>
+            <text class="save-plan-label">收藏当前周计划，方便以后直接复用</text>
+          </view>
+        </block>
+        <button class="btn-confirm-week" bindtap="onConfirmWeek">{{isNextWeek ? '开始下周计划' : '开始本周计划'}}</button>
       </view>
     </block>
 
@@ -138,15 +157,6 @@
       </view>
     </view>
 
-    <!-- 分配日期弹框（Mock 下点击日期区域打开，回显当前分配） -->
-    <view class="menu-count-modal-mask" wx:if="{{showAssignDateModal}}" catchtap="onCloseAssignDateModal"></view>
-    <view class="menu-count-modal-panel" wx:if="{{showAssignDateModal}}">
-      <view class="menu-count-modal-title">分配日期</view>
-      <view class="date-assign-modal-content">
-        <text>当前分配：{{assignDateLabels || '—'}}</text>
-      </view>
-      <button class="menu-count-save-btn" bindtap="onCloseAssignDateModal">关闭</button>
-    </view>
 
     <!-- 备餐套数弹框：内含 1-7 选择 + 保存 -->
     <view class="menu-count-modal-mask" wx:if="{{showMenuCountModal}}" catchtap="onCloseMenuCountModal"></view>
@@ -160,6 +170,47 @@
           data-n="{{item}}"
           bindtap="onSelectMenuCountInModal"
         >{{item}} 套</view>
+      </view>
+      <view class="arrangement-section">
+        <text class="arrangement-title">日期分配方式</text>
+        <view class="arrangement-options">
+          <view
+            class="arrangement-opt {{arrangementMode === 'consecutive' ? 'selected' : ''}}"
+            data-mode="consecutive"
+            bindtap="onSelectArrangementMode"
+          >
+            <view class="arrangement-opt-radio">
+              <view class="arrangement-opt-radio-inner" wx:if="{{arrangementMode === 'consecutive'}}"></view>
+            </view>
+            <view class="arrangement-opt-content">
+              <text class="arrangement-opt-label">连续安排（同一备餐连续几天）</text>
+              <view class="arrangement-demo-grid">
+                <view class="arrangement-demo-cell" wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this">
+                  <text class="arrangement-demo-day">{{item}}</text>
+                  <view class="arrangement-demo-dot" style="background:{{['#7EA9D6','#7EA9D6','#7EA9D6','#7EA9D6','#E8A87C','#E8A87C','#E8A87C'][index]}}"></view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view
+            class="arrangement-opt {{arrangementMode === 'alternating' ? 'selected' : ''}}"
+            data-mode="alternating"
+            bindtap="onSelectArrangementMode"
+          >
+            <view class="arrangement-opt-radio">
+              <view class="arrangement-opt-radio-inner" wx:if="{{arrangementMode === 'alternating'}}"></view>
+            </view>
+            <view class="arrangement-opt-content">
+              <text class="arrangement-opt-label">交替安排（不同备餐交替）</text>
+              <view class="arrangement-demo-grid">
+                <view class="arrangement-demo-cell" wx:for="{{['一','二','三','四','五','六','日']}}" wx:key="*this">
+                  <text class="arrangement-demo-day">{{item}}</text>
+                  <view class="arrangement-demo-dot" style="background:{{['#7EA9D6','#E8A87C','#7EA9D6','#E8A87C','#7EA9D6','#E8A87C','#7EA9D6'][index]}}"></view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
       </view>
       <button class="menu-count-save-btn" bindtap="onSaveSettingsInModal" loading="{{settingsSaving}}">保存</button>
     </view>

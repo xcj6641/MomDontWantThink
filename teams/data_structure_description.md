@@ -1,0 +1,2 @@
+1. Each user will set a week plan per week which may from saved week plan or newly created. The week plan includes x 备餐, x ranges from 1 to 7. Each 备餐 will be assigned to several days of the week or no day. A single 备餐 includes different number of 餐次 which is decided by baby's month age. A single 餐次 will include several recipes. User can adjust a single day's recipe, when adjust a single day, create a new 备餐 to save and assigned to the current day.
+2. We will have multiple users. 

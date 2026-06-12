@@ -7,7 +7,9 @@ function splitText(s: string): string[] {
 
 Page({
   data: {
+    babyName: '',
     babyAgeMonths: '' as string,
+    teethStage: '' as string,
     allergyText: '',
     blwLikesText: '',
     blwDislikesText: '',
@@ -21,7 +23,9 @@ Page({
     const result = await callCloud('getPreferences', {}, { showLoading: false })
     if (result.success) {
       this.setData({
+        babyName: result.babyName || '',
         babyAgeMonths: result.babyAgeMonths != null ? String(result.babyAgeMonths) : '',
+        teethStage: result.teethStage || '',
         allergyText: (result.allergyIngredientNames || []).join(','),
         blwLikesText: (result.blwLikes || []).join(','),
         blwDislikesText: (result.blwDislikes || []).join(','),
@@ -29,8 +33,17 @@ Page({
     }
   },
 
+  onBabyNameInput(e: WechatMiniprogram.Input) {
+    this.setData({ babyName: e.detail.value })
+  },
+
   onBabyAgeInput(e: WechatMiniprogram.Input) {
     this.setData({ babyAgeMonths: e.detail.value })
+  },
+
+  onTeethStageTap(e: WechatMiniprogram.TouchEvent) {
+    const stage = (e.currentTarget.dataset as Record<string, string>).stage || ''
+    this.setData({ teethStage: stage === this.data.teethStage ? '' : stage })
   },
 
   onAllergyInput(e: WechatMiniprogram.Input) {
@@ -51,12 +64,13 @@ Page({
       wx.showToast({ title: '请填写有效宝宝月龄', icon: 'none' })
       return
     }
+    const babyName = this.data.babyName.trim()
     const allergyIngredientNames = splitText(this.data.allergyText)
     const blwLikes = splitText(this.data.blwLikesText)
     const blwDislikes = splitText(this.data.blwDislikesText)
     const res = await callCloud(
       'savePreferences',
-      { babyAgeMonths, allergyIngredientNames, blwLikes, blwDislikes },
+      { babyName, babyAgeMonths, allergyIngredientNames, teethStage: this.data.teethStage, blwLikes, blwDislikes },
       { showLoading: true, loadingTitle: '保存中...' }
     )
     if (res.success) wx.showToast({ title: '已帮你保存偏好', icon: 'success' })

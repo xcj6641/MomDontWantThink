@@ -24,13 +24,14 @@ exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID;
   if (!openid) return res({ code: 'NO_OPENID', message: '无法获取用户标识' });
 
-  const { babyBirthday, babyAgeMonths, allergyIngredientNames, blwLikes, blwDislikes } = event || {};
+  const { babyBirthday, babyName, babyAgeMonths, allergyIngredientNames, teethStage, blwLikes, blwDislikes } = event || {};
   const now = new Date().toISOString();
 
   try {
     const exist = await db.collection('preferences').where({ openid }).get();
     const doc = exist.data && exist.data[0] ? exist.data[0] : null;
     const updateData = { updatedAt: now };
+    if (babyName !== undefined) updateData.babyName = typeof babyName === 'string' ? babyName.trim() : '';
     if (babyBirthday !== undefined) {
       updateData.babyBirthday = typeof babyBirthday === 'string' ? babyBirthday.trim() : '';
       const computed = monthsFromBirthday(updateData.babyBirthday);
@@ -38,6 +39,7 @@ exports.main = async (event, context) => {
     }
     if (babyAgeMonths !== undefined && updateData.babyAgeMonths === undefined) updateData.babyAgeMonths = Math.max(0, parseInt(babyAgeMonths, 10) || 0);
     if (Array.isArray(allergyIngredientNames)) updateData.allergyIngredientNames = allergyIngredientNames;
+    if (teethStage !== undefined) updateData.teethStage = typeof teethStage === 'string' ? teethStage : '';
     if (Array.isArray(blwLikes)) updateData.blwLikes = blwLikes;
     if (Array.isArray(blwDislikes)) updateData.blwDislikes = blwDislikes;
 
@@ -50,9 +52,11 @@ exports.main = async (event, context) => {
     await db.collection('preferences').add({
       data: {
         openid,
+        babyName: updateData.babyName != null ? updateData.babyName : '',
         babyBirthday: updateData.babyBirthday != null ? updateData.babyBirthday : '',
         babyAgeMonths: updateData.babyAgeMonths != null ? updateData.babyAgeMonths : null,
         allergyIngredientNames: updateData.allergyIngredientNames || [],
+        teethStage: updateData.teethStage || '',
         blwLikes: updateData.blwLikes || [],
         blwDislikes: updateData.blwDislikes || [],
         createdAt: now,

@@ -1,0 +1,56 @@
+[
+  {
+    "_id": "tpl_system_5-6",
+    "openid": "system",
+    "isSystem": true,
+    "ageBand": "5-6",
+    "name": "默认(5-6月)",
+    "meals": [
+      { "mealKey": "lunch", "label": "午餐", "defaultBlw": false, "recipeIds": [] }
+    ],
+    "createdAt": "2025-03-02T08:00:00.000Z",
+    "updatedAt": "2025-03-02T08:00:00.000Z"
+  },
+  {
+    "_id": "tpl_system_6-9",
+    "openid": "system",
+    "isSystem": true,
+    "ageBand": "6-9",
+    "name": "默认(6-9月)",
+    "meals": [
+      { "mealKey": "breakfast", "label": "早餐", "defaultBlw": false, "recipeIds": [] },
+      { "mealKey": "lunch", "label": "午餐", "defaultBlw": false, "recipeIds": [] }
+    ],
+    "createdAt": "2025-03-02T08:00:00.000Z",
+    "updatedAt": "2025-03-02T08:00:00.000Z"
+  },
+  {
+    "_id": "tpl_system_9-12",
+    "openid": "system",
+    "isSystem": true,
+    "ageBand": "9-12",
+    "name": "默认(9-12月)",
+    "meals": [
+      { "mealKey": "breakfast", "label": "早餐", "defaultBlw": false, "recipeIds": [] },
+      { "mealKey": "lunch", "label": "午餐", "defaultBlw": false, "recipeIds": [] },
+      { "mealKey": "dinner", "label": "晚餐", "defaultBlw": true, "recipeIds": [] }
+    ],
+    "createdAt": "2025-03-02T08:00:00.000Z",
+    "updatedAt": "2025-03-02T08:00:00.000Z"
+  },
+  {
+    "_id": "tpl_system_12plus",
+    "openid": "system",
+    "isSystem": true,
+    "ageBand": "12+",
+    "name": "默认(12月+)",
+    "meals": [
+      { "mealKey": "breakfast", "label": "早餐", "defaultBlw": false, "recipeIds": [] },
+      { "mealKey": "lunch", "label": "午餐", "defaultBlw": false, "recipeIds": [] },
+      { "mealKey": "snack_pm", "label": "下午加餐", "defaultBlw": false, "recipeIds": [] },
+      { "mealKey": "dinner", "label": "晚餐", "defaultBlw": true, "recipeIds": [] }
+    ],
+    "createdAt": "2025-03-02T08:00:00.000Z",
+    "updatedAt": "2025-03-02T08:00:00.000Z"
+  }
+]

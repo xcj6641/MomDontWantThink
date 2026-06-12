@@ -1,0 +1,1 @@
+Create an agent team to implement the miniprogram. One agent works for frontend including UI, one on cloud function, one on database.

@@ -18,18 +18,68 @@
         </view>
       </view>
 
+      <view class="form-card name-card">
+        <view class="form-card-head">
+          <text class="form-card-title">宝宝名字</text>
+          <text class="form-card-optional">可选</text>
+        </view>
+        <input
+          class="name-input"
+          type="text"
+          placeholder="如：小花"
+          value="{{babyName}}"
+          bindinput="onBabyNameInput"
+          maxlength="20"
+        />
+      </view>
+
       <view class="form-card birthday-card">
         <view class="form-card-head">
           <text class="form-card-title">宝宝生日</text>
           <text class="form-card-required">必填</text>
         </view>
-        <picker mode="date" value="{{babyBirthday}}" start="2020-01-01" end="2030-12-31" bindchange="onBirthdayChange">
+        <picker mode="date" value="{{babyBirthday}}" start="2020-01-01" end="{{todayDateStr}}" bindchange="onBirthdayChange">
           <view class="picker-trigger">
             <text class="picker-text {{babyBirthday ? '' : 'placeholder'}}">{{babyBirthday || '请选择日期'}}</text>
             <text class="picker-arrow">›</text>
           </view>
         </picker>
-        <text class="form-card-hint">我会根据生日自动计算月龄</text>
+        <text class="form-card-hint form-card-hint--warn" wx:if="{{ageTooYoung}}">宝宝当前月龄较小，暂不建议生成辅食计划</text>
+        <text class="form-card-hint" wx:else>我会根据生日自动计算月龄</text>
+      </view>
+
+      <view class="form-card teeth-card">
+        <view class="form-card-head">
+          <text class="form-card-title">出牙阶段</text>
+          <text class="form-card-optional">可选</text>
+        </view>
+        <view class="teeth-stage-row">
+          <view
+            class="teeth-stage-opt {{teethStage === 'none' ? 'teeth-stage-opt--active' : ''}}"
+            data-stage="none"
+            bindtap="onTeethStageTap"
+          >
+            <text class="teeth-stage-opt-label">未出牙</text>
+            <text class="teeth-stage-opt-hint">细腻泥糊</text>
+          </view>
+          <view
+            class="teeth-stage-opt {{teethStage === 'incisors' ? 'teeth-stage-opt--active' : ''}}"
+            data-stage="incisors"
+            bindtap="onTeethStageTap"
+          >
+            <text class="teeth-stage-opt-label">上下门牙</text>
+            <text class="teeth-stage-opt-hint">软烂小块</text>
+          </view>
+          <view
+            class="teeth-stage-opt {{teethStage === 'molars' ? 'teeth-stage-opt--active' : ''}}"
+            data-stage="molars"
+            bindtap="onTeethStageTap"
+          >
+            <text class="teeth-stage-opt-label">上下后槽牙</text>
+            <text class="teeth-stage-opt-hint">可嚼小块</text>
+          </view>
+        </view>
+        <text class="form-card-hint">出牙情况会影响推荐食物的大小和形态</text>
       </view>
 
       <view class="form-card allergens-card">
@@ -52,6 +102,46 @@
         <button class="btn-primary-cta" disabled="{{!birthdayValid || onboardingGenerating}}" loading="{{onboardingGenerating}}" bindtap="onGenerateThisWeek">生成本周辅食计划</button>
       </view>
     </view>
+
+    <!-- 过敏食材选择弹层 -->
+    <view class="allergen-modal-mask" wx:if="{{allergenModalVisible}}" catchtap="onAllergenModalClose"></view>
+    <view class="allergen-modal-panel {{allergenModalVisible ? 'allergen-modal-panel--open' : ''}}">
+      <view class="allergen-modal-head">
+        <text class="allergen-modal-title">选择过敏食材</text>
+        <text class="allergen-modal-close" catchtap="onAllergenModalClose">×</text>
+      </view>
+
+      <text class="allergen-modal-section-label">常见过敏食材</text>
+      <view class="allergen-common-grid">
+        <view
+          wx:for="{{commonAllergens}}"
+          wx:key="*this"
+          class="allergen-common-tag {{modalCommonSelected[item] ? 'allergen-common-tag--on' : ''}}"
+          data-name="{{item}}"
+          catchtap="onToggleCommonAllergen"
+        >{{item}}</view>
+      </view>
+
+      <text class="allergen-modal-section-label">自定义添加</text>
+      <view class="allergen-custom-row">
+        <input
+          class="allergen-custom-input"
+          placeholder="输入食材名称"
+          value="{{customAllergenInput}}"
+          bindinput="onCustomAllergenInput"
+          maxlength="20"
+        />
+        <button class="allergen-custom-add-btn" catchtap="onAddCustomAllergen">添加</button>
+      </view>
+      <view class="allergen-custom-chips" wx:if="{{modalCustomList.length > 0}}">
+        <view class="allergen-chip" wx:for="{{modalCustomList}}" wx:key="*this">
+          <text class="allergen-chip-text">{{item}}</text>
+          <text class="allergen-chip-remove" data-index="{{index}}" catchtap="onRemoveCustomModal">×</text>
+        </view>
+      </view>
+
+      <button class="allergen-modal-confirm-btn" catchtap="onAllergenModalConfirm">确认</button>
+    </view>
   </block>
 
   <block wx:if="{{showMainPage}}">
@@ -63,7 +153,9 @@
         <text class="baby-bar-main">宝宝 · {{babyAgeSummary}}</text>
         <text class="baby-bar-tagline">今天也要好好吃饭呀 🌱</text>
         <view class="baby-bar-meta">
-          <text class="baby-bar-intake">参考摄入量：辅食250ml · 奶150ml</text>
+          <text class="baby-bar-intake-label">参考摄入量</text>
+          <text class="baby-bar-intake">辅食250ml · 奶150ml · 水200ml</text>
+          <text class="baby-bar-allergen" wx:if="{{teethStageLine}}">{{teethStageLine}}</text>
           <text class="baby-bar-allergen" wx:if="{{allergenLine}}">{{allergenLine}}</text>
         </view>
       </view>

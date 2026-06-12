@@ -3,6 +3,8 @@ const { callCloud } = require('../../utils/cloud.js')
 const { MEAL_LABELS } = require('../../utils/ageMealConfig.js')
 const { mockRecipes, getUseMockWeekPlan, generateMockWeekPlan, getWeekDates } = require('../../utils/weekPlanMock.js')
 
+const COMMON_ALLERGENS = ['鸡蛋', '牛奶', '花生', '坚果', '小麦', '大豆', '鱼', '虾', '蟹', '贝类', '芝麻']
+
 const DONE_STORAGE_PREFIX = 'todayFood_done_v1'
 const BABY_LIKE_STORAGE_PREFIX = 'todayFood_baby_like_v1'
 const FAVORITE_STORAGE_PREFIX = 'todayFood_collect_v1'
@@ -36,6 +38,24 @@ function getWeekdayShort(dateStr: string): string {
   if (Number.isNaN(d.getTime())) return ''
   const map = ['日', '一', '二', '三', '四', '五', '六']
   return map[d.getDay()] || ''
+}
+
+function calcAgeMonths(birthday: string): number {
+  if (!birthday || !/^\d{4}-\d{2}-\d{2}$/.test(birthday)) return -1
+  const birth = new Date(birthday + 'T12:00:00')
+  const now = new Date()
+  if (birth > now) return -1
+  let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth())
+  if (now.getDate() < birth.getDate()) months -= 1
+  return Math.max(0, months)
+}
+
+function getFeedingStage(ageMonths: number): string {
+  if (ageMonths < 5) return 'too_young'
+  if (ageMonths < 6) return 'stage_1'
+  if (ageMonths < 9) return 'stage_2'
+  if (ageMonths < 12) return 'stage_3'
+  return 'stage_4'
 }
 
 function babyAgeLabel(birthday: string): string {
@@ -182,12 +202,22 @@ Page({
   data: {
     loading: true,
     today: '' as string,
+    todayDateStr: '' as string,
     weekStartDate: '' as string,
     weekdayShort: '' as string,
+    babyName: '' as string,
     babyBirthday: '' as string,
+    teethStage: '' as string,
+    ageTooYoung: false as boolean,
     allergens: [] as string[],
+    allergenModalVisible: false as boolean,
+    commonAllergens: COMMON_ALLERGENS,
+    modalCommonSelected: {} as Record<string, boolean>,
+    modalCustomList: [] as string[],
+    customAllergenInput: '' as string,
     /** 宝宝 · 后的月龄文案，与 👶 分列展示以便过敏行与「宝宝」对齐 */
     babyAgeSummary: '' as string,
+    teethStageLine: '' as string,
     allergenLine: '' as string,
     showSetupBanner: false as boolean,
     arrangedMealCount: 0 as number,
@@ -214,6 +244,7 @@ Page({
     const debugViewMode = (wx.getStorageSync(DEBUG_VIEW_MODE_KEY) || 'auto') as 'auto' | 'initial' | 'today'
     this.setData({
       today,
+      todayDateStr: today,
       weekStartDate: getThisMonday(),
       weekdayShort: getWeekdayShort(today),
       debugViewMode,
@@ -355,6 +386,8 @@ Page({
     }> = []
     let showSetupBanner = false
     let babyBirthday = ''
+    let babyName = ''
+    let teethStage = ''
     let allergens: string[] = []
     let tomorrowTip = ''
     let thisWeekStatus: 'generated' | 'none' = 'none'
@@ -370,6 +403,8 @@ Page({
           }))
         : []
       babyBirthday = result.babyBirthday || ''
+      babyName = result.babyName || ''
+      teethStage = result.teethStage || ''
       allergens = Array.isArray(result.allergens) ? result.allergens : []
       const showInitial = result.hasOwnProperty('showInitial') ? !!result.showInitial : true
       showSetupBanner = showInitial
@@ -386,12 +421,15 @@ Page({
       if (mockRows.length) {
         todayMeals = mockRows
         thisWeekStatus = 'generated'
+        showSetupBanner = false
       }
     }
 
     const thisWeekBtnText = thisWeekStatus === 'generated' ? '本周计划 >' : '生成本周计划'
     const nextWeekBtnText = nextWeekStatus === 'generated' ? '查看下周计划' : '生成下周计划'
 
+    const TEETH_STAGE_LABELS: Record<string, string> = { none: '未出牙', incisors: '上下门牙', molars: '上下后槽牙' }
+    const teethStageLine = teethStage && TEETH_STAGE_LABELS[teethStage] ? `出牙：${TEETH_STAGE_LABELS[teethStage]}` : ''
     const babyAgeSummary = babyBirthday ? babyAgeLabel(babyBirthday) : ''
     const allergenLine = allergens.length ? `过敏：${allergens.join('、')}` : ''
     let mealGroups = this.buildMealGroups(todayMeals, today)
@@ -402,10 +440,13 @@ Page({
       loading: false,
       weekStartDate,
       weekdayShort: getWeekdayShort(today),
+      babyName,
       babyBirthday,
+      teethStage,
       allergens,
       birthdayValid: !!babyBirthday,
       babyAgeSummary,
+      teethStageLine,
       allergenLine,
       showSetupBanner,
       mealGroups,
@@ -458,27 +499,79 @@ Page({
     wx.navigateTo({ url: `/pages/weekSummary/weekSummary?weekStartDate=${nextWeekStartDate}&isNextWeek=1${age}` })
   },
 
+  onBabyNameInput(e: WechatMiniprogram.Input) {
+    this.setData({ babyName: e.detail.value })
+  },
+
   onBirthdayChange(e: WechatMiniprogram.PickerChange) {
     const val = (e.detail && e.detail.value) || ''
+    const ageMonths = calcAgeMonths(val)
+    const ageTooYoung = !!val && ageMonths < 5
     this.setData({
       babyBirthday: val,
       birthdayValid: !!val,
+      ageTooYoung,
     })
   },
 
+  onTeethStageTap(e: WechatMiniprogram.TouchEvent) {
+    const stage = (e.currentTarget.dataset as Record<string, string>).stage || ''
+    this.setData({ teethStage: stage === this.data.teethStage ? '' : stage })
+  },
+
   onAddAllergen() {
-    wx.showModal({
-      title: '添加过敏食材',
-      editable: true,
-      placeholderText: '输入食材名称',
-      success: (res) => {
-        if (res.confirm && res.content && res.content.trim()) {
-          const name = res.content.trim()
-          const allergens = [...(this.data.allergens || []), name]
-          this.setData({ allergens })
-        }
-      },
+    const { allergens } = this.data
+    const modalCommonSelected: Record<string, boolean> = {}
+    COMMON_ALLERGENS.forEach((name) => {
+      modalCommonSelected[name] = allergens.includes(name)
     })
+    const modalCustomList = allergens.filter((a) => !COMMON_ALLERGENS.includes(a))
+    this.setData({
+      allergenModalVisible: true,
+      modalCommonSelected,
+      modalCustomList,
+      customAllergenInput: '',
+    })
+  },
+
+  onAllergenModalClose() {
+    this.setData({ allergenModalVisible: false })
+  },
+
+  onToggleCommonAllergen(e: WechatMiniprogram.TouchEvent) {
+    const name = (e.currentTarget.dataset as Record<string, string>).name
+    const modalCommonSelected = { ...this.data.modalCommonSelected }
+    modalCommonSelected[name] = !modalCommonSelected[name]
+    this.setData({ modalCommonSelected })
+  },
+
+  onCustomAllergenInput(e: WechatMiniprogram.Input) {
+    this.setData({ customAllergenInput: e.detail.value })
+  },
+
+  onAddCustomAllergen() {
+    const name = (this.data.customAllergenInput || '').trim()
+    if (!name) return
+    if (this.data.modalCustomList.includes(name) || COMMON_ALLERGENS.includes(name)) {
+      wx.showToast({ title: '已添加过该食材', icon: 'none' })
+      return
+    }
+    const modalCustomList = [...this.data.modalCustomList, name]
+    this.setData({ modalCustomList, customAllergenInput: '' })
+  },
+
+  onRemoveCustomModal(e: WechatMiniprogram.TouchEvent) {
+    const idx = e.currentTarget.dataset.index as number
+    if (idx == null) return
+    const modalCustomList = this.data.modalCustomList.filter((_, i) => i !== idx)
+    this.setData({ modalCustomList })
+  },
+
+  onAllergenModalConfirm() {
+    const { modalCommonSelected, modalCustomList } = this.data
+    const selected = COMMON_ALLERGENS.filter((name) => modalCommonSelected[name])
+    const allergens = [...selected, ...modalCustomList]
+    this.setData({ allergens, allergenModalVisible: false })
   },
 
   onRemoveAllergen(e: WechatMiniprogram.TouchEvent) {
@@ -489,9 +582,19 @@ Page({
   },
 
   async onGenerateThisWeek() {
-    const { babyBirthday, allergens, weekStartDate, onboardingGenerating } = this.data
+    const { babyName, babyBirthday, allergens, weekStartDate, onboardingGenerating, todayDateStr } = this.data
     if (!babyBirthday) {
       wx.showToast({ title: '👉 先选择宝宝生日', icon: 'none' })
+      return
+    }
+    if (babyBirthday > todayDateStr) {
+      wx.showToast({ title: '宝宝生日不能晚于今天', icon: 'none' })
+      return
+    }
+    const ageMonths = calcAgeMonths(babyBirthday)
+    const feedingStage = getFeedingStage(ageMonths)
+    if (feedingStage === 'too_young') {
+      wx.showToast({ title: '宝宝当前月龄较小，暂不建议生成辅食计划', icon: 'none', duration: 3000 })
       return
     }
     if (onboardingGenerating) return
@@ -499,8 +602,12 @@ Page({
     const saveRes = await callCloud(
       'savePreferences',
       {
+        babyName: babyName.trim(),
         babyBirthday,
         allergyIngredientNames: allergens || [],
+        ageMonths,
+        feedingStage,
+        teethStage: this.data.teethStage || '',
       },
       { showLoading: false }
     )

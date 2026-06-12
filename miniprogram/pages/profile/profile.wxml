@@ -2,6 +2,17 @@
   <view class="tip tip-text">👉 仅用于生成计划时排除/偏好，不做医疗推断哦</view>
 
   <view class="block">
+    <text class="block-title">宝宝名字</text>
+    <input
+      class="input"
+      type="text"
+      placeholder="如：小花"
+      value="{{babyName}}"
+      bindinput="onBabyNameInput"
+    />
+  </view>
+
+  <view class="block">
     <text class="block-title">宝宝月龄（必填）</text>
     <input
       class="input"
@@ -11,6 +22,36 @@
       bindinput="onBabyAgeInput"
     />
     <text class="block-hint">生成计划前须填写，用于匹配适龄菜谱与餐次</text>
+  </view>
+
+  <view class="block">
+    <text class="block-title">出牙阶段</text>
+    <view class="teeth-stage-row">
+      <view
+        class="teeth-stage-opt {{teethStage === 'none' ? 'teeth-stage-opt--active' : ''}}"
+        data-stage="none"
+        bindtap="onTeethStageTap"
+      >
+        <text class="teeth-stage-opt-label">未出牙</text>
+        <text class="teeth-stage-opt-hint">细腻泥糊</text>
+      </view>
+      <view
+        class="teeth-stage-opt {{teethStage === 'incisors' ? 'teeth-stage-opt--active' : ''}}"
+        data-stage="incisors"
+        bindtap="onTeethStageTap"
+      >
+        <text class="teeth-stage-opt-label">上下门牙</text>
+        <text class="teeth-stage-opt-hint">软烂小块</text>
+      </view>
+      <view
+        class="teeth-stage-opt {{teethStage === 'molars' ? 'teeth-stage-opt--active' : ''}}"
+        data-stage="molars"
+        bindtap="onTeethStageTap"
+      >
+        <text class="teeth-stage-opt-label">上下后槽牙</text>
+        <text class="teeth-stage-opt-hint">可嚼小块</text>
+      </view>
+    </view>
   </view>
 
   <view class="block">

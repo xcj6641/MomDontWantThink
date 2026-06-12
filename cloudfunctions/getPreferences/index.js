@@ -19,8 +19,10 @@ exports.main = async (event, context) => {
     const r = await db.collection('preferences').where({ openid }).get();
     const pref = r.data && r.data[0] ? r.data[0] : null;
     return res(null, {
+      babyName: pref && pref.babyName ? pref.babyName : '',
       babyBirthday: pref && pref.babyBirthday ? pref.babyBirthday : '',
       babyAgeMonths: pref ? pref.babyAgeMonths : null,
+      teethStage: pref && pref.teethStage ? pref.teethStage : '',
       allergyIngredientNames: pref ? (pref.allergyIngredientNames || []) : [],
       blwLikes: pref ? (pref.blwLikes || []) : [],
       blwDislikes: pref ? (pref.blwDislikes || []) : [],

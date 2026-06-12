@@ -48,8 +48,8 @@ exports.main = async (event, context) => {
     const nextPlan = nextRes.data && nextRes.data[0] ? nextRes.data[0] : null;
 
     const babyBirthday = pref && pref.babyBirthday ? pref.babyBirthday : '';
-    const thisWeekConfirmed = thisSettings && thisSettings.confirmed === true;
-    const showInitial = !babyBirthday || !thisWeekConfirmed;
+    const hasWeekPlan = thisPlan && Array.isArray(thisPlan.days) && thisPlan.days.length > 0;
+    const showInitial = !babyBirthday;
 
     let todayMeals = [];
     if (thisPlan && thisPlan.days && Array.isArray(thisPlan.days)) {
@@ -82,7 +82,9 @@ exports.main = async (event, context) => {
       nextWeekStatus,
       nextWeekStartDate: nextMonday,
       showInitial: !!showInitial,
+      babyName: pref && pref.babyName ? pref.babyName : '',
       babyBirthday: babyBirthday || '',
+      teethStage: pref && pref.teethStage ? pref.teethStage : '',
       allergens: pref && Array.isArray(pref.allergyIngredientNames) ? pref.allergyIngredientNames : [],
       thisWeekStartDate: thisMonday
     });
