@@ -33,6 +33,17 @@ function getOrderedSlotsForAge(months) {
   return SLOT_ORDER.filter(s => slots.includes(s));
 }
 
+/** mealCountOverride: 1→[lunch] 2→[breakfast,lunch] 3→[breakfast,lunch,dinner] 4→[breakfast,lunch,dinner,snack_pm] */
+function getSlotsFromMealCount(n) {
+  const map = {
+    1: ['lunch'],
+    2: ['breakfast', 'lunch'],
+    3: ['breakfast', 'lunch', 'dinner'],
+    4: ['breakfast', 'lunch', 'dinner', 'snack_pm'],
+  };
+  return map[n] ? SLOT_ORDER.filter(s => map[n].includes(s)) : null;
+}
+
 function getDefaultTemplateForAge(months, now, setIndex) {
   const band = getAgeBand(months);
   const slots = getOrderedSlotsForAge(months);
@@ -178,7 +189,8 @@ exports.main = async (event, context) => {
     const lastSettingsRes = await db.collection('week_settings').where({ openid, weekStartDate: thisMon }).get();
     const lastSettings = lastSettingsRes.data && lastSettingsRes.data[0] ? lastSettingsRes.data[0] : null;
 
-    const mealSlots = getOrderedSlotsForAge(babyAgeMonths);
+    const overrideSlots = pref.mealCountOverride != null ? getSlotsFromMealCount(pref.mealCountOverride) : null;
+    const mealSlots = overrideSlots || getOrderedSlotsForAge(babyAgeMonths);
     const band = getAgeBand(babyAgeMonths);
     let dateAssignments = [];
     let blwByMeal = { ...DEFAULT_BLW };
@@ -238,6 +250,8 @@ exports.main = async (event, context) => {
     const allergyNames = pref.allergyIngredientNames || [];
     const blwLikes = pref.blwLikes || [];
     const blwDislikes = pref.blwDislikes || [];
+    const allergyMode = pref.allergyMode === true;
+    const allergyTestingPeriod = Math.max(2, Math.min(3, parseInt(pref.allergyTestingPeriod, 10) || 3));
 
     const sysRecipes = await db.collection('recipes').where({ openid: 'system' }).limit(300).get();
     const userRecipes = await db.collection('recipes').where({ openid }).limit(200).get();
@@ -248,31 +262,134 @@ exports.main = async (event, context) => {
     const days = [];
     const usedInWeek = [];
 
-    for (let i = 0; i < 7; i++) {
-      const date = addDays(nextWeekStart, i);
-      const meals = [];
-      for (const mealKey of mealSlots) {
-        const isBlw = blwByMeal[mealKey] !== false;
-        const pool = recipeList.filter(r =>
-          supportsMeal(r, mealKey) && isBlwOk(r, isBlw)
-        );
-        const chosen = pickRecipe(pool, {
-          usedRecipeIds: usedInWeek,
-          allergyNames,
-          blwDislikes: isBlw ? blwDislikes : [],
-          blwLikes: isBlw ? blwLikes : [],
-          babyAgeMonths,
-          isBlw
-        });
-        if (chosen) usedInWeek.push(chosen._id);
-        meals.push({
-          mealKey,
-          recipeId: chosen ? chosen._id : '',
-          recipeName: chosen ? chosen.name : '未安排',
-          blw: isBlw
-        });
+    if (allergyMode) {
+      // AllergyMode: block-based scheduling — one new ingredient per block (breakfast slot)
+      const statusRes = await db.collection('ingredient_status').where({ openid }).limit(200).get();
+      const statusDocs = statusRes.data || [];
+      const passedNames = new Set(statusDocs.filter(d => d.status === 'passed').map(d => d.ingredient));
+      const pausedNames = new Set(statusDocs.filter(d => d.status === 'paused').map(d => d.ingredient));
+      const testingNames = new Set(statusDocs.filter(d => d.status === 'testing').map(d => d.ingredient));
+
+      // Combine paused with allergyNames for filtering
+      const allExcludedNames = allergyNames.concat(Array.from(pausedNames));
+
+      // Divide 7 days into blocks
+      const blocks = [];
+      for (let i = 0; i < 7; i += allergyTestingPeriod) {
+        blocks.push({ start: i, end: Math.min(i + allergyTestingPeriod - 1, 6) });
       }
-      days.push({ date, isOverridden: false, meals });
+
+      // For each block, find a recipe whose first ingredient is untested
+      const blockBreakfastRecipes = {};
+      const assignedTestingIngredients = [];
+      for (let bi = 0; bi < blocks.length; bi++) {
+        const pool = recipeList.filter(r => supportsMeal(r, 'breakfast') && !hasAllergy(r, allExcludedNames));
+        const chosen = pool.find(r => {
+          const firstIng = (r.ingredients && r.ingredients[0]) ? (r.ingredients[0].name || '').trim() : '';
+          if (!firstIng) return false;
+          return !passedNames.has(firstIng) && !pausedNames.has(firstIng) && !testingNames.has(firstIng)
+            && !assignedTestingIngredients.includes(firstIng);
+        }) || null;
+        if (chosen) {
+          blockBreakfastRecipes[bi] = chosen;
+          const firstIng = (chosen.ingredients[0].name || '').trim();
+          assignedTestingIngredients.push(firstIng);
+          if (!usedInWeek.includes(chosen._id)) usedInWeek.push(chosen._id);
+        }
+      }
+
+      // Generate days
+      for (let i = 0; i < 7; i++) {
+        const date = addDays(nextWeekStart, i);
+        const meals = [];
+        const blockIndex = blocks.findIndex(b => i >= b.start && i <= b.end);
+
+        for (const mealKey of mealSlots) {
+          const isBlw = blwByMeal[mealKey] !== false;
+          if (mealKey === 'breakfast' && blockIndex >= 0 && blockBreakfastRecipes[blockIndex]) {
+            const chosen = blockBreakfastRecipes[blockIndex];
+            const testingDay = i - blocks[blockIndex].start + 1;
+            const totalTestingDays = blocks[blockIndex].end - blocks[blockIndex].start + 1;
+            meals.push({
+              mealKey,
+              recipeId: chosen._id,
+              recipeName: chosen.name,
+              blw: isBlw,
+              ingredient: (chosen.ingredients[0] && chosen.ingredients[0].name) ? chosen.ingredients[0].name.trim() : '',
+              testingDay,
+              totalTestingDays,
+            });
+          } else {
+            const pool = recipeList.filter(r =>
+              supportsMeal(r, mealKey) && isBlwOk(r, isBlw) && !hasAllergy(r, allExcludedNames)
+            );
+            const chosen = pickRecipe(pool, {
+              usedRecipeIds: usedInWeek,
+              allergyNames: allExcludedNames,
+              blwDislikes: isBlw ? blwDislikes : [],
+              blwLikes: isBlw ? blwLikes : [],
+              babyAgeMonths,
+              isBlw
+            });
+            if (chosen) usedInWeek.push(chosen._id);
+            meals.push({
+              mealKey,
+              recipeId: chosen ? chosen._id : '',
+              recipeName: chosen ? chosen.name : '未安排',
+              blw: isBlw
+            });
+          }
+        }
+        days.push({ date, isOverridden: false, meals });
+      }
+
+      // Upsert ingredient_status for newly assigned testing ingredients
+      for (let bi = 0; bi < blocks.length; bi++) {
+        const recipe = blockBreakfastRecipes[bi];
+        if (!recipe) continue;
+        const ingredient = (recipe.ingredients[0] && recipe.ingredients[0].name) ? recipe.ingredients[0].name.trim() : '';
+        if (!ingredient) continue;
+        const totalDays = blocks[bi].end - blocks[bi].start + 1;
+        const blockStartDate = addDays(nextWeekStart, blocks[bi].start);
+        const existCheck = await db.collection('ingredient_status').where({ openid, ingredient }).get();
+        if (existCheck.data && existCheck.data.length > 0) {
+          await db.collection('ingredient_status').doc(existCheck.data[0]._id).update({
+            data: { status: 'testing', currentDay: 1, totalDays, weekStartDate: nextWeekStart, startDate: blockStartDate, updatedAt: now }
+          });
+        } else {
+          await db.collection('ingredient_status').add({
+            data: { openid, ingredient, status: 'testing', currentDay: 1, totalDays, weekStartDate: nextWeekStart, startDate: blockStartDate, observations: [], firstAddedAt: now, updatedAt: now }
+          });
+        }
+      }
+    } else {
+      // Normal mode generation
+      for (let i = 0; i < 7; i++) {
+        const date = addDays(nextWeekStart, i);
+        const meals = [];
+        for (const mealKey of mealSlots) {
+          const isBlw = blwByMeal[mealKey] !== false;
+          const pool = recipeList.filter(r =>
+            supportsMeal(r, mealKey) && isBlwOk(r, isBlw)
+          );
+          const chosen = pickRecipe(pool, {
+            usedRecipeIds: usedInWeek,
+            allergyNames,
+            blwDislikes: isBlw ? blwDislikes : [],
+            blwLikes: isBlw ? blwLikes : [],
+            babyAgeMonths,
+            isBlw
+          });
+          if (chosen) usedInWeek.push(chosen._id);
+          meals.push({
+            mealKey,
+            recipeId: chosen ? chosen._id : '',
+            recipeName: chosen ? chosen.name : '未安排',
+            blw: isBlw
+          });
+        }
+        days.push({ date, isOverridden: false, meals });
+      }
     }
 
     await db.collection('week_settings').add({

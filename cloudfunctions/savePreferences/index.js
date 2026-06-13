@@ -24,7 +24,7 @@ exports.main = async (event, context) => {
   const openid = cloud.getWXContext().OPENID;
   if (!openid) return res({ code: 'NO_OPENID', message: '无法获取用户标识' });
 
-  const { babyBirthday, babyName, babyAgeMonths, allergyIngredientNames, teethStage, blwLikes, blwDislikes } = event || {};
+  const { babyBirthday, babyName, babyAgeMonths, allergyIngredientNames, teethStage, blwLikes, blwDislikes, allergyMode, allergyTestingPeriod, mealCountOverride } = event || {};
   const now = new Date().toISOString();
 
   try {
@@ -42,6 +42,9 @@ exports.main = async (event, context) => {
     if (teethStage !== undefined) updateData.teethStage = typeof teethStage === 'string' ? teethStage : '';
     if (Array.isArray(blwLikes)) updateData.blwLikes = blwLikes;
     if (Array.isArray(blwDislikes)) updateData.blwDislikes = blwDislikes;
+    if (allergyMode !== undefined) updateData.allergyMode = !!allergyMode;
+    if (allergyTestingPeriod !== undefined) updateData.allergyTestingPeriod = Math.max(2, Math.min(3, parseInt(allergyTestingPeriod, 10) || 3));
+    if (mealCountOverride !== undefined) updateData.mealCountOverride = mealCountOverride === null ? null : Math.max(1, Math.min(4, parseInt(mealCountOverride, 10) || 0)) || null;
 
     if (doc) {
       await db.collection('preferences').doc(doc._id).update({
@@ -59,6 +62,9 @@ exports.main = async (event, context) => {
         teethStage: updateData.teethStage || '',
         blwLikes: updateData.blwLikes || [],
         blwDislikes: updateData.blwDislikes || [],
+        allergyMode: updateData.allergyMode !== undefined ? updateData.allergyMode : false,
+        allergyTestingPeriod: updateData.allergyTestingPeriod !== undefined ? updateData.allergyTestingPeriod : 3,
+        mealCountOverride: updateData.mealCountOverride !== undefined ? updateData.mealCountOverride : null,
         createdAt: now,
         updatedAt: now
       }

@@ -1,6 +1,7 @@
 <view class="container">
-  <view class="tip tip-text">👉 仅用于生成计划时排除/偏好，不做医疗推断哦</view>
+  <view class="tip tip-text">👉 用于生成更适合宝宝的辅食计划</view>
 
+  <!-- 宝宝姓名 -->
   <view class="block">
     <text class="block-title">宝宝名字</text>
     <input
@@ -12,20 +13,26 @@
     />
   </view>
 
+  <!-- 宝宝生日（必填） -->
   <view class="block">
-    <text class="block-title">宝宝月龄（必填）</text>
-    <input
-      class="input"
-      type="number"
-      placeholder="整数，如 11"
-      value="{{babyAgeMonths}}"
-      bindinput="onBabyAgeInput"
-    />
-    <text class="block-hint">生成计划前须填写，用于匹配适龄菜谱与餐次</text>
+    <view class="block-title-row">
+      <text class="block-title">宝宝生日</text>
+      <text class="block-required">必填</text>
+    </view>
+    <picker mode="date" value="{{babyBirthday}}" start="2020-01-01" end="{{todayDateStr}}" bindchange="onBirthdayChange">
+      <view class="picker-trigger">
+        <text class="picker-text {{babyBirthday ? '' : 'picker-placeholder'}}">{{babyBirthday || '请选择日期'}}</text>
+        <text class="picker-arrow">›</text>
+      </view>
+    </picker>
+    <text class="block-hint" wx:if="{{babyAgeLabel}}">{{babyAgeLabel}}</text>
+    <text class="block-hint" wx:else>保存后系统自动计算月龄，用于匹配适龄菜谱与餐次</text>
   </view>
 
+  <!-- 出牙阶段 -->
   <view class="block">
     <text class="block-title">出牙阶段</text>
+    <text class="block-desc">用于调整辅食形态推荐</text>
     <view class="teeth-stage-row">
       <view
         class="teeth-stage-opt {{teethStage === 'none' ? 'teeth-stage-opt--active' : ''}}"
@@ -41,7 +48,7 @@
         bindtap="onTeethStageTap"
       >
         <text class="teeth-stage-opt-label">上下门牙</text>
-        <text class="teeth-stage-opt-hint">软烂小块</text>
+        <text class="teeth-stage-opt-hint">软烂颗粒</text>
       </view>
       <view
         class="teeth-stage-opt {{teethStage === 'molars' ? 'teeth-stage-opt--active' : ''}}"
@@ -54,37 +61,87 @@
     </view>
   </view>
 
+  <!-- 每日餐数 -->
+  <view class="block">
+    <text class="block-title">每日餐数</text>
+    <text class="block-desc">用于控制每日辅食安排数量{{autoMealCount > 0 ? '，当前月龄推荐 ' + autoMealCount + ' 餐' : ''}}</text>
+    <view class="meal-count-row">
+      <view
+        wx:for="{{mealCountOptions}}"
+        wx:key="value"
+        class="meal-count-opt {{(mealCountOverride !== null ? mealCountOverride : autoMealCount) === item.value ? 'meal-count-opt--active' : ''}} {{mealCountOverride === null && item.value === autoMealCount ? 'meal-count-opt--auto' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="onSelectMealCount"
+      >
+        <text class="meal-count-opt-label">{{item.label}}</text>
+        <text class="meal-count-opt-tag" wx:if="{{mealCountOverride === null && item.value === autoMealCount}}">推荐</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 排敏模式 -->
+  <view class="block">
+    <text class="block-title">排敏模式</text>
+    <view class="allergy-mode-row" bindtap="onToggleAllergyMode">
+      <view class="allergy-mode-row-left">
+        <text class="allergy-mode-row-label">{{allergyMode ? '已开启' : '已关闭'}}</text>
+        <text class="allergy-mode-row-desc" wx:if="{{allergyMode}}">每种新食材连续安排2~3天，避免多个新食材同时引入</text>
+        <text class="allergy-mode-row-desc" wx:else>按照常规辅食计划生成规则安排</text>
+      </view>
+      <switch checked="{{allergyMode}}" color="#7fb77e" catchtap="onToggleAllergyMode" />
+    </view>
+    <block wx:if="{{allergyMode}}">
+      <view class="allergy-period-row">
+        <text class="allergy-period-label">排敏周期</text>
+        <view class="allergy-period-opts">
+          <view
+            class="allergy-period-opt {{allergyTestingPeriod === 2 ? 'allergy-period-opt--active' : ''}}"
+            data-period="2"
+            bindtap="onSelectAllergyPeriod"
+          >2天</view>
+          <view
+            class="allergy-period-opt {{allergyTestingPeriod === 3 ? 'allergy-period-opt--active' : ''}}"
+            data-period="3"
+            bindtap="onSelectAllergyPeriod"
+          >3天</view>
+        </view>
+      </view>
+      <view class="allergy-nav-row" bindtap="onGoToAllergyIngredients">
+        <text class="allergy-nav-label">排敏食材状态</text>
+        <text class="allergy-nav-arrow">›</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 过敏/忌口食材 -->
   <view class="block">
     <text class="block-title">过敏/忌口食材</text>
-    <textarea
-      class="textarea"
-      placeholder="多个用逗号分隔，如：芒果,虾"
-      value="{{allergyText}}"
-      bindinput="onAllergyInput"
-    />
+    <text class="block-desc">点击食材标签添加或取消，生成计划时自动排除</text>
+    <view class="allergen-search-row">
+      <input
+        class="allergen-search-input"
+        placeholder="搜索食材..."
+        value="{{ingredientSearchText}}"
+        bindinput="onIngredientSearch"
+        maxlength="10"
+      />
+    </view>
+    <view class="allergen-tag-grid">
+      <view
+        wx:for="{{filteredIngredients}}"
+        wx:key="*this"
+        class="allergen-tag {{allergenSelected[item] ? 'allergen-tag--on' : ''}}"
+        data-name="{{item}}"
+        bindtap="onToggleAllergen"
+      >{{item}}{{allergenSelected[item] ? ' ×' : ''}}</view>
+    </view>
+    <view class="allergen-empty" wx:if="{{filteredIngredients.length === 0}}">
+      <text class="allergen-empty-text">未找到该食材</text>
+    </view>
   </view>
 
-  <view class="block">
-    <text class="block-title">BLW 喜欢（食材或菜名）</text>
-    <textarea
-      class="textarea"
-      placeholder="如：胡萝卜,西兰花"
-      value="{{blwLikesText}}"
-      bindinput="onBlwLikesInput"
-    />
-  </view>
-
-  <view class="block">
-    <text class="block-title">BLW 不喜欢</text>
-    <textarea
-      class="textarea"
-      placeholder="如：苦瓜"
-      value="{{blwDislikesText}}"
-      bindinput="onBlwDislikesInput"
-    />
-  </view>
 </view>
 
 <view class="footer-fixed">
-  <button class="btn-primary" bindtap="onSave">保存偏好</button>
+  <button class="btn-primary" bindtap="onSave">保存设置</button>
 </view>

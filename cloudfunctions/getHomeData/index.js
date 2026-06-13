@@ -40,8 +40,12 @@ exports.main = async (event, context) => {
       db.collection('preferences').where({ openid }).get(),
       db.collection('week_settings').where({ openid, weekStartDate: thisMonday }).get(),
       db.collection('week_plans').where({ openid, weekStartDate: thisMonday }).get(),
-      db.collection('week_plans').where({ openid, weekStartDate: nextMonday }).get()
+      db.collection('week_plans').where({ openid, weekStartDate: nextMonday }).get(),
     ]);
+    let testingIngRes = { data: [] };
+    try {
+      testingIngRes = await db.collection('ingredient_status').where({ openid, status: 'testing' }).orderBy('updatedAt', 'desc').limit(1).get();
+    } catch (_) {}
     const pref = prefRes.data && prefRes.data[0] ? prefRes.data[0] : null;
     const thisSettings = thisSettingsRes.data && thisSettingsRes.data[0] ? thisSettingsRes.data[0] : null;
     const thisPlan = thisRes.data && thisRes.data[0] ? thisRes.data[0] : null;
@@ -86,7 +90,14 @@ exports.main = async (event, context) => {
       babyBirthday: babyBirthday || '',
       teethStage: pref && pref.teethStage ? pref.teethStage : '',
       allergens: pref && Array.isArray(pref.allergyIngredientNames) ? pref.allergyIngredientNames : [],
-      thisWeekStartDate: thisMonday
+      thisWeekStartDate: thisMonday,
+      allergyMode: pref ? (pref.allergyMode === true) : false,
+      allergyTestingPeriod: pref ? (pref.allergyTestingPeriod || 3) : 3,
+      currentTestingIngredient: (testingIngRes.data && testingIngRes.data[0]) ? {
+        ingredient: testingIngRes.data[0].ingredient,
+        currentDay: testingIngRes.data[0].currentDay || 1,
+        totalDays: testingIngRes.data[0].totalDays || 3,
+      } : null,
     });
   } catch (e) {
     return res({ code: 'DB_ERROR', message: e.message });

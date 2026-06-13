@@ -1,0 +1,94 @@
+.container {
+  min-height: 100vh;
+  background: #eaf7ef;
+  padding: 24rpx 24rpx 120rpx;
+  box-sizing: border-box;
+}
+
+.loading-block {
+  padding: 32rpx 0;
+}
+.skeleton-row {
+  height: 80rpx;
+  background: rgba(255,255,255,0.7);
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.empty-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 48rpx 32rpx;
+  text-align: center;
+  margin-top: 32rpx;
+}
+.empty-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2f3a35;
+  margin-bottom: 12rpx;
+}
+.empty-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #8a978e;
+  line-height: 1.5;
+}
+
+.section-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #5c7060;
+  padding: 16rpx 4rpx 10rpx;
+}
+
+.ingredient-card {
+  background: #fff;
+  border-radius: 14rpx;
+  padding: 24rpx 24rpx;
+  margin-bottom: 14rpx;
+}
+.ingredient-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2f3a35;
+  margin-bottom: 10rpx;
+}
+.ingredient-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+.badge {
+  font-size: 22rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-weight: 600;
+}
+.badge-testing {
+  background: #fff3e0;
+  color: #e67e22;
+}
+.badge-passed {
+  background: #eaf7ef;
+  color: #3a7a44;
+}
+.badge-paused {
+  background: #fdecea;
+  color: #c0392b;
+}
+.progress-text {
+  font-size: 24rpx;
+  color: #e67e22;
+}
+.ingredient-hint {
+  display: block;
+  font-size: 24rpx;
+  color: #8a978e;
+  margin-top: 8rpx;
+}
+
+.safe-area {
+  height: env(safe-area-inset-bottom, 0);
+}

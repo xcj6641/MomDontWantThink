@@ -17,6 +17,13 @@
   margin-bottom: 28rpx;
 }
 
+.block-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 12rpx;
+}
+
 .block-title {
   display: block;
   font-size: 28rpx;
@@ -25,9 +32,31 @@
   margin-bottom: 12rpx;
 }
 
+.block-title-row .block-title {
+  margin-bottom: 0;
+}
+
+.block-required {
+  font-size: 22rpx;
+  color: #e74c3c;
+  font-weight: 600;
+  background: #fdecea;
+  padding: 2rpx 10rpx;
+  border-radius: 8rpx;
+}
+
+.block-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #8a978e;
+  margin-bottom: 14rpx;
+  line-height: 1.4;
+}
+
 .input {
   width: 100%;
-  padding: 20rpx;
+  height: 88rpx;
+  padding: 0 20rpx;
   background: #fff;
   border-radius: 12rpx;
   font-size: 28rpx;
@@ -41,27 +70,28 @@
   margin-top: 8rpx;
 }
 
-.textarea {
-  width: 100%;
-  min-height: 160rpx;
-  padding: 20rpx;
+/* 生日 picker */
+.picker-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: #fff;
   border-radius: 12rpx;
+  padding: 20rpx;
+}
+.picker-text {
   font-size: 28rpx;
-  box-sizing: border-box;
+  color: #2f3a35;
+}
+.picker-placeholder {
+  color: #b8c4bb;
+}
+.picker-arrow {
+  font-size: 32rpx;
+  color: #b0b8b4;
 }
 
-.footer-fixed {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 24rpx 32rpx;
-  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
-  background: #fff;
-  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.06);
-}
-
+/* 出牙阶段 */
 .teeth-stage-row {
   display: flex;
   gap: 16rpx;
@@ -99,6 +129,169 @@
   opacity: 0.85;
 }
 
+/* 每日餐数 */
+.meal-count-row {
+  display: flex;
+  gap: 14rpx;
+  flex-wrap: wrap;
+}
+.meal-count-opt {
+  flex: 1;
+  min-width: 120rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 8rpx;
+  border-radius: 14rpx;
+  border: 2rpx solid #d8e8da;
+  background: #f5faf6;
+}
+.meal-count-opt--active {
+  border-color: #7fb77e;
+  background: rgba(127, 183, 126, 0.14);
+}
+.meal-count-opt-label {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #2f3a35;
+  text-align: center;
+  word-break: break-all;
+}
+.meal-count-opt--active .meal-count-opt-label {
+  color: #4a8549;
+}
+.meal-count-opt-tag {
+  font-size: 20rpx;
+  color: #7fb77e;
+  margin-top: 4rpx;
+}
+
+/* 排敏模式 */
+.allergy-mode-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 20rpx;
+  margin-bottom: 12rpx;
+}
+.allergy-mode-row-left {
+  flex: 1;
+  margin-right: 16rpx;
+}
+.allergy-mode-row-label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+.allergy-mode-row-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #8a978e;
+  margin-top: 4rpx;
+}
+.allergy-period-row {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  margin-bottom: 12rpx;
+}
+.allergy-period-label {
+  font-size: 28rpx;
+  color: #444;
+  flex: 1;
+}
+.allergy-period-opts {
+  display: flex;
+  gap: 12rpx;
+}
+.allergy-period-opt {
+  padding: 10rpx 28rpx;
+  border-radius: 32rpx;
+  border: 2rpx solid #d8e8da;
+  font-size: 26rpx;
+  color: #555;
+  background: #f5faf6;
+}
+.allergy-period-opt--active {
+  border-color: #7fb77e;
+  background: rgba(127,183,126,0.14);
+  color: #4a8549;
+  font-weight: 600;
+}
+.allergy-nav-row {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 20rpx;
+  margin-bottom: 4rpx;
+}
+.allergy-nav-label {
+  flex: 1;
+  font-size: 28rpx;
+  color: #444;
+}
+.allergy-nav-arrow {
+  font-size: 32rpx;
+  color: #b0b8b4;
+}
+
+/* 过敏/忌口食材 inline label grid */
+.allergen-search-row {
+  margin-bottom: 16rpx;
+}
+.allergen-search-input {
+  width: 100%;
+  height: 72rpx;
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 0 28rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+.allergen-tag-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.allergen-tag {
+  padding: 10rpx 24rpx;
+  border-radius: 32rpx;
+  border: 2rpx solid #dde4df;
+  font-size: 26rpx;
+  color: #555;
+  background: #f5f5f5;
+}
+.allergen-tag--on {
+  border-color: #e74c3c;
+  background: #fdecea;
+  color: #c0392b;
+  font-weight: 600;
+}
+.allergen-empty {
+  padding: 32rpx 0 8rpx;
+}
+.allergen-empty-text {
+  font-size: 26rpx;
+  color: #b0b8b4;
+}
+
+/* 保存按钮 */
+.footer-fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.06);
+}
 .btn-primary {
   width: 100%;
   height: 88rpx;

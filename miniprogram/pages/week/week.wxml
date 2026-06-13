@@ -34,6 +34,12 @@
 
   <!-- 与常规页同一套布局；无备餐数据时「备餐安排」下为异常重试区 -->
   <block wx:else>
+    <!-- 排敏模式提示 -->
+    <view class="allergy-mode-banner" wx:if="{{allergyMode}}">
+      <text class="allergy-mode-banner-text">🛡 排敏模式已开启</text>
+      <text class="allergy-mode-banner-sub">本周计划将按照排敏规则生成</text>
+    </view>
+
     <view class="date-district-card">
       <view class="date-district-title-row">
         <text class="date-district-prep-title">{{isNextWeek ? '下周' : '本周'}}备 {{settingsNVal || 3}} 套备餐</text>

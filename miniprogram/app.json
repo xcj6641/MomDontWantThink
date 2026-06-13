@@ -16,7 +16,8 @@
     "pages/logs/logs",
     "pages/recipes/recipes",
     "pages/recipeEdit/recipeEdit",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/allergyMode/allergyMode"
   ],
   "window": {
     "navigationBarTextStyle": "black",

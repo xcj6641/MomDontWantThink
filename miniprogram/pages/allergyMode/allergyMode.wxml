@@ -1,0 +1,51 @@
+<view class="container">
+  <view class="loading-block" wx:if="{{loading}}">
+    <view class="skeleton-row" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+  </view>
+
+  <block wx:elif="{{!hasAny}}">
+    <view class="empty-card">
+      <text class="empty-title">还没有排敏记录</text>
+      <text class="empty-desc">开启排敏模式并生成计划后，食材状态会在这里显示</text>
+    </view>
+  </block>
+
+  <block wx:else>
+    <!-- 排敏中 -->
+    <block wx:if="{{testing.length > 0}}">
+      <view class="section-title">排敏中</view>
+      <view class="ingredient-card" wx:for="{{testing}}" wx:key="ingredient">
+        <view class="ingredient-name">{{item.ingredient}}</view>
+        <view class="ingredient-meta">
+          <text class="badge badge-testing">{{item.statusLabel}}</text>
+          <text class="progress-text" wx:if="{{item.progressText}}">{{item.progressText}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 暂停添加 -->
+    <block wx:if="{{paused.length > 0}}">
+      <view class="section-title">暂停添加</view>
+      <view class="ingredient-card" wx:for="{{paused}}" wx:key="ingredient">
+        <view class="ingredient-name">{{item.ingredient}}</view>
+        <view class="ingredient-meta">
+          <text class="badge badge-paused">{{item.statusLabel}}</text>
+        </view>
+        <text class="ingredient-hint">曾出现疑似不适反应，建议暂缓添加</text>
+      </view>
+    </block>
+
+    <!-- 已通过 -->
+    <block wx:if="{{passed.length > 0}}">
+      <view class="section-title">已通过</view>
+      <view class="ingredient-card" wx:for="{{passed}}" wx:key="ingredient">
+        <view class="ingredient-name">{{item.ingredient}}</view>
+        <view class="ingredient-meta">
+          <text class="badge badge-passed">{{item.statusLabel}}</text>
+        </view>
+      </view>
+    </block>
+  </block>
+
+  <view class="safe-area"></view>
+</view>

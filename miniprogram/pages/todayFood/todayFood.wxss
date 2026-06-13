@@ -872,3 +872,162 @@
   height: env(safe-area-inset-bottom);
   min-height: 24rpx;
 }
+
+/* 排敏模式横幅 */
+.allergy-mode-banner {
+  background: #fff8e7;
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-left: 6rpx solid #f0a500;
+}
+.allergy-mode-banner-body {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  gap: 12rpx;
+}
+.allergy-mode-banner-icon {
+  font-size: 32rpx;
+  flex-shrink: 0;
+}
+.allergy-mode-banner-text-wrap {
+  flex: 1;
+}
+.allergy-mode-banner-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #7a5500;
+}
+.allergy-mode-banner-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #a07020;
+  line-height: 1.4;
+  margin-top: 4rpx;
+}
+.allergy-mode-banner-link {
+  font-size: 26rpx;
+  color: #e07a00;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+/* 排敏日标签 */
+.meal-testing-tag {
+  background: #fff3cd;
+  color: #a06000;
+  font-size: 22rpx;
+  padding: 3rpx 12rpx;
+  border-radius: 16rpx;
+  margin-left: 8rpx;
+  font-weight: 600;
+}
+
+/* 排敏按钮 */
+.allergy-btns {
+  display: flex;
+  gap: 8rpx;
+  flex-shrink: 0;
+}
+.allergy-btn {
+  font-size: 24rpx;
+  padding: 10rpx 18rpx;
+  border-radius: 32rpx;
+  font-weight: 600;
+}
+.allergy-btn--ok {
+  background: #eaf7ef;
+  color: #3a7a44;
+  border: 2rpx solid #7fb77e;
+}
+.allergy-btn--ok.allergy-btn--done {
+  background: #7fb77e;
+  color: #fff;
+}
+.allergy-btn--anomaly {
+  background: #fdecea;
+  color: #c0392b;
+  border: 2rpx solid #e74c3c;
+}
+
+/* 异常记录弹框 */
+.anomaly-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+}
+.anomaly-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -100%;
+  z-index: 201;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 32rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  transition: bottom 0.25s ease;
+}
+.anomaly-panel--open {
+  bottom: 0;
+}
+.anomaly-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+.anomaly-panel-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #2f3a35;
+}
+.anomaly-panel-close {
+  font-size: 40rpx;
+  color: #b0b8b4;
+  padding: 8rpx;
+}
+.anomaly-panel-hint {
+  display: block;
+  font-size: 26rpx;
+  color: #8a978e;
+  margin-bottom: 24rpx;
+}
+.anomaly-symptom-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  margin-bottom: 32rpx;
+}
+.anomaly-symptom-tag {
+  padding: 14rpx 28rpx;
+  border-radius: 32rpx;
+  border: 2rpx solid #dde4df;
+  font-size: 28rpx;
+  color: #555;
+  background: #f5f5f5;
+}
+.anomaly-symptom-tag--on {
+  border-color: #e74c3c;
+  background: #fdecea;
+  color: #c0392b;
+  font-weight: 600;
+}
+.anomaly-confirm-btn {
+  width: 100%;
+  height: 88rpx;
+  line-height: 88rpx;
+  background: #e74c3c;
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+}

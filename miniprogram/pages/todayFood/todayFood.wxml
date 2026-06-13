@@ -68,7 +68,7 @@
             bindtap="onTeethStageTap"
           >
             <text class="teeth-stage-opt-label">上下门牙</text>
-            <text class="teeth-stage-opt-hint">软烂小块</text>
+            <text class="teeth-stage-opt-hint">软烂颗粒</text>
           </view>
           <view
             class="teeth-stage-opt {{teethStage === 'molars' ? 'teeth-stage-opt--active' : ''}}"
@@ -146,7 +146,7 @@
 
   <block wx:if="{{showMainPage}}">
   <!-- 宝宝信息：分层 — 标题行 / 鼓励语 / 参考摄入+过敏 -->
-  <view class="baby-bar" wx:if="{{babyBirthday || allergenLine}}">
+  <view class="baby-bar" wx:if="{{babyBirthday || allergenLine || allergyModeLine}}">
     <text class="baby-bar-icon" wx:if="{{babyBirthday}}">👶</text>
     <view class="baby-bar-top {{babyBirthday ? '' : 'baby-bar-top--full'}}">
       <view class="baby-bar-head" wx:if="{{babyBirthday}}">
@@ -157,6 +157,7 @@
           <text class="baby-bar-intake">辅食250ml · 奶150ml · 水200ml</text>
           <text class="baby-bar-allergen" wx:if="{{teethStageLine}}">{{teethStageLine}}</text>
           <text class="baby-bar-allergen" wx:if="{{allergenLine}}">{{allergenLine}}</text>
+          <text class="baby-bar-allergen" wx:if="{{allergyModeLine}}">{{allergyModeLine}}</text>
         </view>
       </view>
       <view class="baby-bar-head baby-bar-head--allergen-only" wx:elif="{{allergenLine}}">
@@ -167,6 +168,18 @@
         <text class="baby-bar-link" bindtap="onBabyBarNextWeek">{{nextWeekBtnText}}</text>
       </view>
     </view>
+  </view>
+
+  <!-- 排敏模式横幅 -->
+  <view class="allergy-mode-banner" wx:if="{{allergyMode && !showSetupBanner}}">
+    <view class="allergy-mode-banner-body">
+      <text class="allergy-mode-banner-icon">🛡</text>
+      <view class="allergy-mode-banner-text-wrap">
+        <text class="allergy-mode-banner-title">当前为排敏模式</text>
+        <text class="allergy-mode-banner-desc">新食材将连续安排观察周期，请尽量不要同时添加多个新食材</text>
+      </view>
+    </view>
+    <text class="allergy-mode-banner-link" catchtap="onGoToAllergySettings">调整 ›</text>
   </view>
 
   <!-- 引导：未完成首页设置 -->
@@ -198,6 +211,7 @@
         <view class="meal-slot-left">
           <text class="meal-slot-title">{{item.mealLabel}}</text>
           <text class="meal-blw-tag" wx:if="{{item.blw}}">BLW</text>
+          <text class="meal-testing-tag" wx:if="{{allergyMode && item.isTestingMeal}}">排敏 Day{{item.testingDay}}</text>
         </view>
         <view class="meal-slot-right">
           <view
@@ -231,7 +245,27 @@
                 >收藏</view>
               </view>
             </view>
+            <!-- 排敏模式：当前餐次是排敏食材时显示 [无异常] [有异常] -->
+            <block wx:if="{{allergyMode && item.isTestingMeal}}">
+              <view class="allergy-btns">
+                <view
+                  class="allergy-btn allergy-btn--ok {{dish.done ? 'allergy-btn--done' : ''}}"
+                  catchtap="onRecordOk"
+                  data-ingredient="{{item.ingredient}}"
+                  data-day="{{item.testingDay}}"
+                  data-totaldays="{{item.totalTestingDays}}"
+                >无异常</view>
+                <view
+                  class="allergy-btn allergy-btn--anomaly"
+                  catchtap="onOpenAnomalyDialog"
+                  data-ingredient="{{item.ingredient}}"
+                  data-day="{{item.testingDay}}"
+                >有异常</view>
+              </view>
+            </block>
+            <!-- 普通完成按钮 -->
             <view
+              wx:else
               class="dish-check-done {{dish.done ? 'dish-check-done--on' : ''}}"
               catchtap="onToggleDone"
               data-dishkey="{{dish.dishKey}}"
@@ -273,5 +307,25 @@
   </view>
 
   <view class="bottom-safe"></view>
+
+  <!-- 异常记录弹框 -->
+  <view class="anomaly-mask" wx:if="{{showAnomalyDialog}}" catchtap="onCloseAnomalyDialog"></view>
+  <view class="anomaly-panel {{showAnomalyDialog ? 'anomaly-panel--open' : ''}}">
+    <view class="anomaly-panel-head">
+      <text class="anomaly-panel-title">记录异常反应</text>
+      <text class="anomaly-panel-close" catchtap="onCloseAnomalyDialog">×</text>
+    </view>
+    <text class="anomaly-panel-hint">可多选，有助于后续参考</text>
+    <view class="anomaly-symptom-grid">
+      <view
+        wx:for="{{['皮疹','腹泻','呕吐','便秘','口周发红','其他']}}"
+        wx:key="*this"
+        class="anomaly-symptom-tag {{anomalySymptoms.indexOf(item) >= 0 ? 'anomaly-symptom-tag--on' : ''}}"
+        data-symptom="{{item}}"
+        catchtap="onToggleSymptom"
+      >{{item}}</view>
+    </view>
+    <button class="anomaly-confirm-btn" catchtap="onConfirmAnomaly">确认记录</button>
+  </view>
   </block>
 </view>

@@ -12,6 +12,7 @@ Page({
     teethStage: '' as string,
     teethStageLine: '' as string,
     allergyText: '',
+    allergyModeLine: '' as string,
     mealCount: 0,
     likedCount: 0,
     myRecipeCount: 0,
@@ -47,6 +48,7 @@ Page({
       const allergyText = allergies.length > 0 ? '过敏：' + allergies.slice(0, 2).join('、') + (allergies.length > 2 ? '…' : '') : ''
       const teethStage = (prefsResult.teethStage as string) || ''
       const teethStageLine = teethStage && TEETH_STAGE_LABELS[teethStage] ? `出牙：${TEETH_STAGE_LABELS[teethStage]}` : ''
+      const allergyModeLine = prefsResult.allergyMode ? '排敏模式：已开启' : ''
       this.setData({
         hasPrefs: true,
         babyAgeMonths: months,
@@ -54,6 +56,7 @@ Page({
         teethStage,
         teethStageLine,
         allergyText,
+        allergyModeLine,
       })
     }
 
@@ -92,6 +95,10 @@ Page({
   },
 
   onNavAllergy() {
+    wx.navigateTo({ url: '/pages/profile/profile' })
+  },
+
+  onGoToFoodSettings() {
     wx.navigateTo({ url: '/pages/profile/profile' })
   },
 

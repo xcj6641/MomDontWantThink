@@ -647,3 +647,24 @@
 .empty .btn-primary--mt {
   margin-top: 24rpx;
 }
+
+/* 排敏模式横幅 */
+.allergy-mode-banner {
+  background: #fff8e7;
+  border-radius: 14rpx;
+  padding: 18rpx 24rpx;
+  margin-bottom: 16rpx;
+  border-left: 6rpx solid #f0a500;
+}
+.allergy-mode-banner-text {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #7a5500;
+}
+.allergy-mode-banner-sub {
+  display: block;
+  font-size: 24rpx;
+  color: #a07020;
+  margin-top: 4rpx;
+}

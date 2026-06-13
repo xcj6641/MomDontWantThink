@@ -2,10 +2,11 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
-  "channelsEnabled": true,
   "permissions": {
     "allow": [
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(node *)"
     ]
-  }
+  },
+  "channelsEnabled": true
 }

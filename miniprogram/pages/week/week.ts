@@ -61,6 +61,7 @@ Page({
     needConfirm: false as boolean,
     weekConfirmed: false as boolean,
     loading: true as boolean,
+    allergyMode: false as boolean,
     babyAgeMonths: null as number | null,
     mealSlots: [] as string[],
     settingsSummary: '' as string,
@@ -1113,6 +1114,7 @@ Page({
       settingsTemplateIds,
       settingsTabList,
       settingsSelectedIndex: 1,
+      allergyMode: result.allergyMode === true,
     }, () => {
       this.refreshSettingsDayCellList()
       this.refreshDisplayTemplateCards(onLoadComplete)

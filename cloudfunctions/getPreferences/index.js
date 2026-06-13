@@ -26,6 +26,9 @@ exports.main = async (event, context) => {
       allergyIngredientNames: pref ? (pref.allergyIngredientNames || []) : [],
       blwLikes: pref ? (pref.blwLikes || []) : [],
       blwDislikes: pref ? (pref.blwDislikes || []) : [],
+      allergyMode: pref ? (pref.allergyMode === true) : false,
+      allergyTestingPeriod: pref ? (pref.allergyTestingPeriod || 3) : 3,
+      mealCountOverride: pref ? (pref.mealCountOverride != null ? pref.mealCountOverride : null) : null,
     });
   } catch (e) {
     return res({ code: 'DB_ERROR', message: e.message });

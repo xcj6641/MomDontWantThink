@@ -118,6 +118,10 @@ interface MealGroup {
   mealLabel: string
   blw: boolean
   dishes: DishRow[]
+  ingredient?: string
+  testingDay?: number
+  totalTestingDays?: number
+  isTestingMeal?: boolean
 }
 
 type MockMealRow = {
@@ -219,6 +223,7 @@ Page({
     babyAgeSummary: '' as string,
     teethStageLine: '' as string,
     allergenLine: '' as string,
+    allergyModeLine: '' as string,
     showSetupBanner: false as boolean,
     arrangedMealCount: 0 as number,
     mealGroups: [] as MealGroup[],
@@ -237,6 +242,11 @@ Page({
     /** 与首页 onboarding 一致：生日校验 + 生成本周 CTA */
     birthdayValid: false as boolean,
     onboardingGenerating: false as boolean,
+    allergyMode: false as boolean,
+    currentTestingIngredient: null as { ingredient: string; currentDay: number; totalDays: number } | null,
+    showAnomalyDialog: false as boolean,
+    anomalySymptoms: [] as string[],
+    anomalyDishKey: '' as string,
   },
 
   onLoad() {
@@ -344,6 +354,10 @@ Page({
         mealLabel: m.mealLabel || MEAL_LABELS[m.mealKey] || m.mealKey,
         blw: !!m.blw,
         dishes,
+        ingredient: (m as any).ingredient || '',
+        testingDay: (m as any).testingDay || 0,
+        totalTestingDays: (m as any).totalTestingDays || 0,
+        isTestingMeal: !!(m as any).ingredient && !!(m as any).testingDay,
       }
     })
     return this.applyDoneFromStorage(date, groups)
@@ -383,6 +397,9 @@ Page({
       recipeId?: string
       blw: boolean
       dishes?: Array<{ name: string; recipeId?: string }>
+      ingredient?: string
+      testingDay?: number
+      totalTestingDays?: number
     }> = []
     let showSetupBanner = false
     let babyBirthday = ''
@@ -394,6 +411,8 @@ Page({
     let nextWeekStatus = 'none'
     let nextWeekStartDate = getNextMondayFrom(getThisMonday())
     let weekStartDate = this.data.weekStartDate || getThisMonday()
+    let allergyMode = false
+    let currentTestingIngredient: { ingredient: string; currentDay: number; totalDays: number } | null = null
 
     if (result && result.success !== false) {
       todayMeals = Array.isArray(result.todayMeals)
@@ -413,6 +432,8 @@ Page({
       nextWeekStatus = result.nextWeekStatus || 'none'
       nextWeekStartDate = result.nextWeekStartDate || getNextMondayFrom(weekStartDate)
       weekStartDate = result.thisWeekStartDate || weekStartDate
+      allergyMode = result.allergyMode === true
+      currentTestingIngredient = result.currentTestingIngredient || null
     }
 
     /** Mock 联调：只要本地有 mock 周计划解析出餐次，即用其覆盖云端今日列表（保证每餐多菜可测） */
@@ -432,6 +453,7 @@ Page({
     const teethStageLine = teethStage && TEETH_STAGE_LABELS[teethStage] ? `出牙：${TEETH_STAGE_LABELS[teethStage]}` : ''
     const babyAgeSummary = babyBirthday ? babyAgeLabel(babyBirthday) : ''
     const allergenLine = allergens.length ? `过敏：${allergens.join('、')}` : ''
+    const allergyModeLine = allergyMode ? '排敏模式：已开启' : ''
     let mealGroups = this.buildMealGroups(todayMeals, today)
     const arrangedMealCount = this.countArrangedMeals(mealGroups)
     const tomorrowLines = this.parseTomorrowLines(tomorrowTip)
@@ -448,6 +470,7 @@ Page({
       babyAgeSummary,
       teethStageLine,
       allergenLine,
+      allergyModeLine,
       showSetupBanner,
       mealGroups,
       arrangedMealCount,
@@ -458,6 +481,8 @@ Page({
       nextWeekBtnText,
       nextWeekStatus,
       nextWeekStartDate,
+      allergyMode,
+      currentTestingIngredient,
     })
     this.applyDebugViewMode(showSetupBanner)
   },
@@ -792,5 +817,70 @@ Page({
       dishes: g.dishes.map((d) => (d.dishKey === dishKey ? { ...d, favorite } : d)),
     }))
     this.setData({ mealGroups })
+  },
+
+  onGoToAllergySettings() {
+    wx.navigateTo({ url: '/pages/allergyMode/allergyMode' })
+  },
+
+  async onRecordOk(e: WechatMiniprogram.TouchEvent) {
+    const { ingredient, day, totaldays } = e.currentTarget.dataset as Record<string, any>
+    if (!ingredient || !day) return
+    const result = await callCloud(
+      'recordAllergyObservation',
+      { ingredient, day: Number(day), result: 'ok', weekStartDate: this.data.weekStartDate },
+      { showLoading: false }
+    )
+    if (result.success) {
+      wx.showToast({ title: result.message || '已记录', icon: 'none' })
+      await this.loadTodayData()
+    } else {
+      wx.showToast({ title: '记录失败，请重试', icon: 'none' })
+    }
+  },
+
+  onOpenAnomalyDialog(e: WechatMiniprogram.TouchEvent) {
+    const { ingredient, day } = e.currentTarget.dataset as Record<string, any>
+    if (!ingredient || !day) return
+    this.setData({
+      showAnomalyDialog: true,
+      anomalySymptoms: [],
+      anomalyDishKey: `${ingredient}|${day}`,
+    })
+  },
+
+  onCloseAnomalyDialog() {
+    this.setData({ showAnomalyDialog: false, anomalySymptoms: [], anomalyDishKey: '' })
+  },
+
+  onToggleSymptom(e: WechatMiniprogram.TouchEvent) {
+    const symptom = (e.currentTarget.dataset as Record<string, string>).symptom
+    if (!symptom) return
+    const current = this.data.anomalySymptoms || []
+    const next = current.includes(symptom)
+      ? current.filter((s) => s !== symptom)
+      : [...current, symptom]
+    this.setData({ anomalySymptoms: next })
+  },
+
+  async onConfirmAnomaly() {
+    const key = this.data.anomalyDishKey || ''
+    const parts = key.split('|')
+    const ingredient = parts[0]
+    const day = parseInt(parts[1] || '1', 10)
+    if (!ingredient || !day) return
+    const symptoms = this.data.anomalySymptoms || []
+    this.setData({ showAnomalyDialog: false })
+    const result = await callCloud(
+      'recordAllergyObservation',
+      { ingredient, day, result: 'anomaly', symptoms, weekStartDate: this.data.weekStartDate },
+      { showLoading: false }
+    )
+    if (result.success) {
+      wx.showToast({ title: '已记录异常，该食材已暂停添加', icon: 'none', duration: 2500 })
+      await this.loadTodayData()
+    } else {
+      wx.showToast({ title: '记录失败，请重试', icon: 'none' })
+    }
   },
 })

@@ -75,6 +75,7 @@ exports.main = async (event, context) => {
       weekStartDate,
       babyAgeMonths: babyAge != null ? babyAge : null,
       allergyIngredientNames: pref ? (pref.allergyIngredientNames || []) : [],
+      allergyMode: pref ? (pref.allergyMode === true) : false,
       settings: settings ? {
         _id: settings._id,
         templateId: settings.templateId,
